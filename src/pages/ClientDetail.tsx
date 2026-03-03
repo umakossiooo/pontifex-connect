@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Download, TrendingUp, DollarSign, AlertTriangle, CheckCircle, XCircle, Upload, FileText, ChevronRight } from "lucide-react";
+import { ArrowLeft, Download, TrendingUp, DollarSign, AlertTriangle, CheckCircle, XCircle, Upload, FileText, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -61,7 +61,7 @@ const ClientDetail = () => {
   const covenantBadge = (status: string) => {
     if (status === "saludable") return <Badge className="bg-success/10 text-success text-xs">Saludable</Badge>;
     if (status === "preventivo") return <Badge className="bg-warning/10 text-warning text-xs">Preventivo</Badge>;
-    return <Badge className="bg-destructive/10 text-destructive text-xs">Crítico</Badge>;
+    return <Badge className="bg-destructive/10 text-destructive text-xs">Critico</Badge>;
   };
 
   const ratioStatusIcon = (status: string) => {
@@ -79,7 +79,9 @@ const ClientDetail = () => {
             <button onClick={() => navigate("/dashboard")} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-2">
               <ArrowLeft className="w-4 h-4" /> Volver a clientes
             </button>
-            <p className="text-xs text-muted-foreground">🏢 {client.companyName} · #{client.id}</p>
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <Building2 className="w-3 h-3" /> {client.companyName} · #{client.id}
+            </p>
             <h1 className="text-2xl font-bold">Dictamen de Riesgo Crediticio</h1>
           </div>
           <Button variant="outline" className="gap-2">
@@ -143,7 +145,7 @@ const ClientDetail = () => {
 
                 {/* Covenants */}
                 <div>
-                  <h3 className="font-bold text-lg mb-3">Semáforo de Covenants</h3>
+                  <h3 className="font-bold text-lg mb-3">Semaforo de Covenants</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                     {client.covenants.map((cov, i) => (
                       <Card key={i} className={`border-l-4 ${
@@ -164,7 +166,6 @@ const ClientDetail = () => {
 
                 {/* Charts Row */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Cash Flow Chart */}
                   <Card className="border">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-base">Flujo de Efectivo Mensual</CardTitle>
@@ -185,7 +186,6 @@ const ClientDetail = () => {
                     </CardContent>
                   </Card>
 
-                  {/* Financial Ratios */}
                   <Card className="border">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-base">Razones Financieras</CardTitle>
@@ -213,7 +213,7 @@ const ClientDetail = () => {
                   <AlertTriangle className="w-12 h-12 text-warning mx-auto mb-4" />
                   <h3 className="text-lg font-bold mb-2">Dictamen no disponible</h3>
                   <p className="text-muted-foreground text-sm max-w-md mx-auto">
-                    Se requiere completar la documentación y el análisis financiero para generar el dictamen de riesgo crediticio.
+                    Se requiere completar la documentacion y el analisis financiero para generar el dictamen de riesgo crediticio.
                   </p>
                   <p className="text-sm mt-4">
                     <span className="font-semibold">Documentos subidos:</span> {uploadedDocs} de {totalDocs}
@@ -276,13 +276,13 @@ const ClientDetail = () => {
           <TabsContent value="info" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card className="border">
-                <CardHeader><CardTitle className="text-base">Información General</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="text-base">Informacion General</CardTitle></CardHeader>
                 <CardContent className="space-y-3">
                   {[
-                    ["Razón Social", client.companyName],
+                    ["Razon Social", client.companyName],
                     ["RFC", client.rfc || "—"],
                     ["Sector", client.sector],
-                    ["Años operando", client.yearsOperating ? `${client.yearsOperating} años` : "—"],
+                    ["Anos operando", client.yearsOperating ? `${client.yearsOperating} anos` : "—"],
                     ["Empleados", client.employees || "—"],
                     ["Ingresos anuales", client.annualRevenue ? formatMoney(client.annualRevenue) : "—"],
                   ].map(([k, v]) => (
@@ -294,11 +294,11 @@ const ClientDetail = () => {
                 </CardContent>
               </Card>
               <Card className="border">
-                <CardHeader><CardTitle className="text-base">Solicitud de Crédito</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="text-base">Solicitud de Credito</CardTitle></CardHeader>
                 <CardContent className="space-y-3">
                   {[
                     ["Monto solicitado", formatMoney(client.amountRequested)],
-                    ["Destino del crédito", client.creditDestination || "—"],
+                    ["Destino del credito", client.creditDestination || "—"],
                     ["Etapa actual", statusLabels[client.status]],
                     ["Resultado", client.result === "en_proceso" ? "En proceso" : client.result],
                     ["Fecha de registro", client.createdAt],

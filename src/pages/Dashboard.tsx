@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Search, BarChart3, CheckCircle, TrendingUp, XCircle, FileCheck } from "lucide-react";
+import { Plus, Search, BarChart3, CheckCircle, TrendingUp, XCircle, FileCheck, Building2, Tag, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -14,19 +14,6 @@ import { mockClients, statusLabels, statusColors } from "@/data/mockData";
 import type { Sector } from "@/types";
 
 const sectors: Sector[] = ["Construcción", "Agricultura", "Transporte", "Comercio", "Industria", "Servicios", "Primario", "Tecnología", "Alimentos", "Manufactura"];
-
-const sectorIcons: Record<string, string> = {
-  "Construcción": "🏗️",
-  "Agricultura": "🌾",
-  "Transporte": "🚚",
-  "Comercio": "🏪",
-  "Industria": "🏭",
-  "Servicios": "💼",
-  "Primario": "⛏️",
-  "Tecnología": "💻",
-  "Alimentos": "🍽️",
-  "Manufactura": "🔧",
-};
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -45,7 +32,7 @@ const Dashboard = () => {
   const kpis = [
     { label: "TOTAL CLIENTES", value: mockClients.length, icon: BarChart3, color: "text-info" },
     { label: "APROBADOS", value: mockClients.filter(c => c.result === "exitoso").length, sub: "Sin restricciones", icon: CheckCircle, color: "text-success" },
-    { label: "EN ANÁLISIS", value: mockClients.filter(c => c.status === "analisis").length, sub: "En proceso", icon: TrendingUp, color: "text-warning" },
+    { label: "EN ANALISIS", value: mockClients.filter(c => c.status === "analisis").length, sub: "En proceso", icon: TrendingUp, color: "text-warning" },
     { label: "RECHAZADOS", value: mockClients.filter(c => c.result === "declinado" || c.result === "rechazado_cliente").length, sub: "No aprobados", icon: XCircle, color: "text-destructive" },
   ];
 
@@ -72,9 +59,7 @@ const Dashboard = () => {
               <CardContent className="p-5">
                 <div className="flex items-start justify-between">
                   <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{kpi.label}</p>
-                  <div className={`w-9 h-9 rounded-full flex items-center justify-center ${kpi.color} bg-current/10`}>
-                    <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
-                  </div>
+                  <kpi.icon className={`w-5 h-5 ${kpi.color}`} />
                 </div>
                 <p className="text-3xl font-bold mt-2 text-foreground">{kpi.value}</p>
                 {kpi.sub && <p className="text-xs text-muted-foreground mt-1">{kpi.sub}</p>}
@@ -117,8 +102,8 @@ const Dashboard = () => {
                 {filtered.map((client, i) => {
                   const docsComplete = client.documents.every(d => d.uploaded);
                   return (
-                    <tr 
-                      key={client.id} 
+                    <tr
+                      key={client.id}
                       className="border-b border-border last:border-0 hover:bg-muted/50 cursor-pointer transition-colors"
                       style={{ animationDelay: `${i * 50}ms` }}
                       onClick={() => navigate(`/client/${client.id}`)}
@@ -141,7 +126,7 @@ const Dashboard = () => {
                       </td>
                       <td className="p-4 text-sm">
                         <span className="flex items-center gap-2">
-                          {sectorIcons[client.sector]} {client.sector}
+                          <Building2 className="w-3.5 h-3.5 text-muted-foreground" /> {client.sector}
                         </span>
                       </td>
                       <td className="p-4 text-sm font-medium">{formatMoney(client.amountRequested)}</td>
@@ -163,7 +148,7 @@ const Dashboard = () => {
               <span>Mostrando {filtered.length} de {mockClients.length} clientes</span>
               <div className="flex items-center gap-4">
                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-success" /> Aprobado</span>
-                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-warning" /> En Análisis</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-warning" /> En Analisis</span>
                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-destructive" /> Rechazado</span>
               </div>
             </div>
@@ -176,7 +161,7 @@ const Dashboard = () => {
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl">
-              🏢 Agregar Nuevo Cliente
+              <Building2 className="w-5 h-5 text-accent" /> Agregar Nuevo Cliente
             </DialogTitle>
             <DialogDescription>
               Completa los datos para registrar al cliente en el pipeline.
@@ -185,7 +170,7 @@ const Dashboard = () => {
           <div className="space-y-5 mt-2">
             <div className="space-y-2">
               <Label className="flex items-center gap-2 text-sm font-semibold">
-                🏢 Nombre de la Empresa <span className="text-destructive">*</span>
+                <Building2 className="w-4 h-4" /> Nombre de la Empresa <span className="text-destructive">*</span>
               </Label>
               <Input
                 placeholder="Ej. Constructora Sonora S.A. de C.V."
@@ -196,22 +181,22 @@ const Dashboard = () => {
             </div>
             <div className="space-y-2">
               <Label className="flex items-center gap-2 text-sm font-semibold">
-                🏷️ Sector <span className="text-destructive">*</span>
+                <Tag className="w-4 h-4" /> Sector <span className="text-destructive">*</span>
               </Label>
               <Select value={newClientSector} onValueChange={setNewClientSector}>
                 <SelectTrigger className="h-11">
-                  <SelectValue placeholder="Seleccionar sector económico..." />
+                  <SelectValue placeholder="Seleccionar sector economico..." />
                 </SelectTrigger>
                 <SelectContent>
                   {sectors.map(s => (
-                    <SelectItem key={s} value={s}>{sectorIcons[s]} {s}</SelectItem>
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
               <Label className="flex items-center gap-2 text-sm font-semibold">
-                💲 Monto Solicitado (MXN) <span className="text-destructive">*</span>
+                <DollarSign className="w-4 h-4" /> Monto Solicitado (MXN) <span className="text-destructive">*</span>
               </Label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Filter, Building2, Globe, CreditCard, CheckCircle, Briefcase } from "lucide-react";
+import { Search, Building2, Globe, CheckCircle, Briefcase, CreditCard, Landmark, Cpu, Award, Medal, RefreshCw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,12 +15,12 @@ const tierColors: Record<PartnerTier, string> = {
   REVISION: "bg-info/10 text-info border-info/30",
 };
 
-const typeIcons: Record<PartnerType, string> = {
-  BANCO: "🏦",
-  FINANCIERA: "💰",
-  FINTECH: "⚡",
-  TPV: "💳",
-  "BANCA DE INVERSION": "📊",
+const typeIcons: Record<PartnerType, React.ReactNode> = {
+  BANCO: <Landmark className="w-5 h-5" />,
+  FINANCIERA: <CreditCard className="w-5 h-5" />,
+  FINTECH: <Cpu className="w-5 h-5" />,
+  TPV: <CreditCard className="w-5 h-5" />,
+  "BANCA DE INVERSION": <Building2 className="w-5 h-5" />,
 };
 
 const Partners = () => {
@@ -47,7 +47,7 @@ const Partners = () => {
         <div className="flex flex-wrap gap-3 mb-6">
           <div className="relative flex-1 min-w-[240px] max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Buscar institución..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+            <Input placeholder="Buscar institucion..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
           </div>
           <Select value={filterTier} onValueChange={setFilterTier}>
             <SelectTrigger className="w-40">
@@ -55,10 +55,10 @@ const Partners = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos los tiers</SelectItem>
-              <SelectItem value="ORO">🥇 Oro</SelectItem>
-              <SelectItem value="PLATA">🥈 Plata</SelectItem>
-              <SelectItem value="BRONCE">🥉 Bronce</SelectItem>
-              <SelectItem value="REVISION">🔄 Revisión</SelectItem>
+              <SelectItem value="ORO"><span className="flex items-center gap-2"><Award className="w-3 h-3" /> Oro</span></SelectItem>
+              <SelectItem value="PLATA"><span className="flex items-center gap-2"><Medal className="w-3 h-3" /> Plata</span></SelectItem>
+              <SelectItem value="BRONCE"><span className="flex items-center gap-2"><Medal className="w-3 h-3" /> Bronce</span></SelectItem>
+              <SelectItem value="REVISION"><span className="flex items-center gap-2"><RefreshCw className="w-3 h-3" /> Revision</span></SelectItem>
             </SelectContent>
           </Select>
           <Select value={filterType} onValueChange={setFilterType}>
@@ -67,9 +67,9 @@ const Partners = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos los tipos</SelectItem>
-              <SelectItem value="BANCO">🏦 Banco</SelectItem>
-              <SelectItem value="FINANCIERA">💰 Financiera</SelectItem>
-              <SelectItem value="FINTECH">⚡ Fintech</SelectItem>
+              <SelectItem value="BANCO"><span className="flex items-center gap-2"><Landmark className="w-3 h-3" /> Banco</span></SelectItem>
+              <SelectItem value="FINANCIERA"><span className="flex items-center gap-2"><CreditCard className="w-3 h-3" /> Financiera</span></SelectItem>
+              <SelectItem value="FINTECH"><span className="flex items-center gap-2"><Cpu className="w-3 h-3" /> Fintech</span></SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -88,7 +88,7 @@ const Partners = () => {
               <CardContent className="p-5">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-lg">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-muted-foreground">
                       {typeIcons[partner.type]}
                     </div>
                     <div>
@@ -103,7 +103,7 @@ const Partners = () => {
                 <div className="mb-3">
                   <p className="text-xs font-semibold text-muted-foreground mb-1.5">Productos</p>
                   <div className="flex flex-wrap gap-1">
-                    {partner.products.creditoSimple && <Badge variant="secondary" className="text-xs">Crédito Simple</Badge>}
+                    {partner.products.creditoSimple && <Badge variant="secondary" className="text-xs">Credito Simple</Badge>}
                     {partner.products.creditoRevolvente && <Badge variant="secondary" className="text-xs">Revolvente</Badge>}
                     {partner.products.factoraje && <Badge variant="secondary" className="text-xs">Factoraje</Badge>}
                     {partner.products.arrendamiento && <Badge variant="secondary" className="text-xs">Arrendamiento</Badge>}
