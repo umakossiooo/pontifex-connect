@@ -9,7 +9,7 @@ interface AppLayoutProps {
 
 const navItems = [
   { label: "Mis Clientes", icon: BarChart3, path: "/dashboard" },
-  { label: "Nuevo Dictamen", icon: FilePlus, path: "/dashboard/new" },
+  { label: "Nuevo Dictamen", icon: FilePlus, path: "/dashboard" },
   { label: "Partners", icon: Briefcase, path: "/partners" },
 ];
 
