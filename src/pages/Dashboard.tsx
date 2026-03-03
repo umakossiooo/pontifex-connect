@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Search, BarChart3, CheckCircle, TrendingUp, XCircle, MoreVertical, FileCheck } from "lucide-react";
+import { Plus, Search, BarChart3, CheckCircle, TrendingUp, XCircle, FileCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import AppLayout from "@/components/AppLayout";
+import ClientActionMenu from "@/components/ClientActionMenu";
 import { mockClients, statusLabels, statusColors } from "@/data/mockData";
 import type { Sector } from "@/types";
 
@@ -149,10 +150,8 @@ const Dashboard = () => {
                           {statusLabels[client.status]}
                         </Badge>
                       </td>
-                      <td className="p-4">
-                        <button className="text-muted-foreground hover:text-foreground" onClick={e => { e.stopPropagation(); }}>
-                          <MoreVertical className="w-4 h-4" />
-                        </button>
+                      <td className="p-4" onClick={e => e.stopPropagation()}>
+                        <ClientActionMenu clientId={client.id} clientName={client.companyName} />
                       </td>
                     </tr>
                   );
