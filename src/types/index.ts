@@ -1,15 +1,4 @@
-export type ClientStatus = 
-  | "prospeccion" 
-  | "integracion" 
-  | "analisis" 
-  | "comite" 
-  | "dictaminado" 
-  | "mesa_control" 
-  | "enviado" 
-  | "contratacion" 
-  | "cobranza";
-
-export type ClientResult = "exitoso" | "declinado" | "autorizado_no_operado" | "rechazado_cliente" | "en_proceso";
+export type ClientStatus = "en_analisis" | "aprobado" | "rechazado";
 
 export type RiskClass = "A" | "B" | "C" | "Rechazado";
 
@@ -61,7 +50,6 @@ export interface Client {
   sector: Sector;
   amountRequested: number;
   status: ClientStatus;
-  result: ClientResult;
   riskClass?: RiskClass;
   score?: number;
   dscr?: number;

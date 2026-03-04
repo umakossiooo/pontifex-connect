@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreVertical } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useClients } from "@/context/ClientContext";
 
 interface ClientActionMenuProps {
   clientId: string;
@@ -18,6 +19,7 @@ interface ClientActionMenuProps {
 const ClientActionMenu = ({ clientId, clientName }: ClientActionMenuProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { updateStatus, deleteClient } = useClients();
 
   const handleAction = (action: string) => {
     switch (action) {
@@ -28,12 +30,15 @@ const ClientActionMenu = ({ clientId, clientName }: ClientActionMenuProps) => {
         navigate(`/client/${clientId}`);
         break;
       case "aprobar":
+        updateStatus(clientId, "aprobado");
         toast({ title: "Cliente aprobado", description: `${clientName} ha sido aprobado.` });
         break;
       case "rechazar":
+        updateStatus(clientId, "rechazado");
         toast({ title: "Cliente rechazado", description: `${clientName} ha sido rechazado.`, variant: "destructive" });
         break;
       case "eliminar":
+        deleteClient(clientId);
         toast({ title: "Cliente eliminado", description: `${clientName} ha sido eliminado.`, variant: "destructive" });
         break;
     }
