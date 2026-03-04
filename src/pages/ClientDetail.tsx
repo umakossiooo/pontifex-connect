@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Download, TrendingUp, DollarSign, AlertTriangle, CheckCircle, XCircle, Upload, FileText, Building2 } from "lucide-react";
+import { ArrowLeft, Download, TrendingUp, DollarSign, AlertTriangle, CheckCircle, XCircle, Upload, FileText, Building2, Landmark, CreditCard, Cpu, Globe, Award, Medal, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import AppLayout from "@/components/AppLayout";
 import { mockClients, documentCategories, statusLabels, statusColors } from "@/data/mockData";
-import type { DocumentCategory } from "@/types";
+import { allPartners } from "@/data/partnersData";
+import type { DocumentCategory, Partner } from "@/types";
 
 const riskColors: Record<string, string> = {
   A: "text-success",
@@ -22,6 +23,200 @@ const riskLabels: Record<string, string> = {
   B: "Riesgo Medio (Clase B)",
   C: "Riesgo Alto (Clase C)",
   Rechazado: "Rechazado",
+};
+
+const tierColors: Record<string, string> = {
+  ORO: "bg-accent/10 text-accent border-accent/30",
+  PLATA: "bg-muted text-muted-foreground border-muted-foreground/20",
+  BRONCE: "bg-warning/10 text-warning border-warning/30",
+  REVISION: "bg-info/10 text-info border-info/30",
+};
+
+const typeIcons: Record<string, React.ReactNode> = {
+  BANCO: <Landmark className="w-4 h-4" />,
+  FINANCIERA: <CreditCard className="w-4 h-4" />,
+  FINTECH: <Cpu className="w-4 h-4" />,
+  TPV: <CreditCard className="w-4 h-4" />,
+  "BANCA DE INVERSION": <Building2 className="w-4 h-4" />,
+};
+
+const sectorMap: Record<string, keyof Partner["sectors"]> = {
+  "Construcción": "industria",
+  "Agricultura": "primario",
+  "Transporte": "servicios",
+  "Comercio": "comercio",
+  "Industria": "industria",
+  "Servicios": "servicios",
+  "Primario": "primario",
+  "Tecnología": "servicios",
+  "Alimentos": "comercio",
+  "Manufactura": "industria",
+};
+
+function matchPartners(client: typeof mockClients[0]): { partner: Partner; score: number; reasons: string[] }[] {
+  return allPartners.map(partner => {
+    let score = 0;
+    const reasons: string[] = [];
+
+    // Sector match
+    const sectorKey = sectorMap[client.sector];
+    if (sectorKey && partner.sectors[sectorKey]) {
+      score += 20;
+      reasons.push("Sector compatible");
+    }
+
+    // Buro match
+    if (client.buroStatus) {
+      const buroKey = client.buroStatus as keyof Partner["buró"];
+      if (partner.buró[buroKey]) {
+        score += 25;
+        reasons.push(`Acepta buro ${client.buroStatus}`);
+      }
+    }
+
+    // Experience match
+    const years = client.yearsOperating || 0;
+    if (years >= 2 && partner.experience.twoOrMoreYears) {
+      score += 15;
+      reasons.push("Experiencia suficiente");
+    } else if (years >= 1 && partner.experience.oneYear) {
+      score += 10;
+      reasons.push("Experiencia minima aceptada");
+    } else if (years < 1 && partner.experience.lessThan1Year) {
+      score += 5;
+      reasons.push("Acepta empresas nuevas");
+    }
+
+    // Product match
+    if (client.productType && partner.products[client.productType as keyof Partner["products"]]) {
+      score += 20;
+      reasons.push("Producto disponible");
+    }
+
+    // Solvency match
+    if (client.solvencyStatus) {
+      const solKey = client.solvencyStatus as keyof Partner["solvency"];
+      if (partner.solvency[solKey]) {
+        score += 10;
+        reasons.push("Solvencia aceptada");
+      }
+    }
+
+    // Contract bonus
+    if (partner.hasContract) {
+      score += 5;
+      reasons.push("Contrato vigente");
+    }
+
+    // Profitability bonus
+    if (partner.isProfitable) {
+      score += 5;
+      reasons.push("Rentable para Pontifex");
+    }
+
+    return { partner, score, reasons };
+  })
+  .filter(m => m.score >= 40)
+  .sort((a, b) => b.score - a.score);
+}
+
+const PartnerMatchSection = ({ client }: { client: typeof mockClients[0] }) => {
+  const matches = matchPartners(client);
+
+  if (!client.score) {
+    return (
+      <Card className="border border-dashed">
+        <CardContent className="p-12 text-center">
+          <Shield className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-bold mb-2">Match no disponible</h3>
+          <p className="text-muted-foreground text-sm max-w-md mx-auto">
+            Se requiere completar el dictamen de riesgo para generar el match con instituciones financieras.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="font-bold text-lg">Instituciones Compatibles</h3>
+          <p className="text-sm text-muted-foreground">
+            {matches.length} instituciones identificadas con base en el perfil crediticio del cliente
+          </p>
+        </div>
+        <Badge variant="outline" className="text-xs">{matches.length} resultados</Badge>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {matches.map(({ partner, score, reasons }) => (
+          <Card key={partner.id} className="border hover:shadow-md transition-all">
+            <CardContent className="p-5">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-muted-foreground">
+                    {typeIcons[partner.type] || <Building2 className="w-4 h-4" />}
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm">{partner.name}</p>
+                    <p className="text-xs text-muted-foreground">{partner.type}</p>
+                  </div>
+                </div>
+                <Badge className={`${tierColors[partner.tier] || ""} text-xs border`}>{partner.tier}</Badge>
+              </div>
+
+              {/* Compatibility score */}
+              <div className="mb-3">
+                <div className="flex items-center justify-between text-xs mb-1">
+                  <span className="text-muted-foreground">Compatibilidad</span>
+                  <span className="font-semibold">{score}%</span>
+                </div>
+                <Progress value={score} className="h-1.5" />
+              </div>
+
+              {/* Match reasons */}
+              <div className="flex flex-wrap gap-1 mb-3">
+                {reasons.map((r, i) => (
+                  <Badge key={i} variant="secondary" className="text-xs">{r}</Badge>
+                ))}
+              </div>
+
+              {/* Products */}
+              <div className="flex flex-wrap gap-1 mb-3">
+                {partner.products.creditoSimple && <Badge variant="outline" className="text-xs">Credito Simple</Badge>}
+                {partner.products.creditoRevolvente && <Badge variant="outline" className="text-xs">Revolvente</Badge>}
+                {partner.products.factoraje && <Badge variant="outline" className="text-xs">Factoraje</Badge>}
+                {partner.products.arrendamiento && <Badge variant="outline" className="text-xs">Arrendamiento</Badge>}
+              </div>
+
+              <div className="flex items-center justify-between pt-3 border-t border-border">
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Globe className="w-3 h-3" />
+                  {partner.coverage.join(", ")}
+                </div>
+                {partner.hasContract && (
+                  <span className="flex items-center gap-1 text-xs text-success">
+                    <CheckCircle className="w-3 h-3" /> Contrato
+                  </span>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {matches.length === 0 && (
+        <Card className="border border-dashed">
+          <CardContent className="p-12 text-center">
+            <AlertTriangle className="w-12 h-12 text-warning mx-auto mb-4" />
+            <h3 className="text-lg font-bold mb-2">Sin instituciones compatibles</h3>
+            <p className="text-muted-foreground text-sm">No se encontraron instituciones que cumplan con los criterios del perfil crediticio actual.</p>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
 };
 
 const ClientDetail = () => {
@@ -94,6 +289,7 @@ const ClientDetail = () => {
             <TabsTrigger value="dictamen">Dictamen</TabsTrigger>
             <TabsTrigger value="documentos">Documentos ({uploadedDocs}/{totalDocs})</TabsTrigger>
             <TabsTrigger value="info">Info General</TabsTrigger>
+            <TabsTrigger value="match">Instituciones Compatibles</TabsTrigger>
           </TabsList>
 
           {/* ===== DICTAMEN TAB ===== */}
@@ -274,6 +470,16 @@ const ClientDetail = () => {
 
           {/* ===== INFO TAB ===== */}
           <TabsContent value="info" className="space-y-6">
+            {/* Client Description */}
+            {client.description && (
+              <Card className="border">
+                <CardHeader><CardTitle className="text-base flex items-center gap-2"><Building2 className="w-4 h-4 text-accent" /> Descripcion de la Empresa</CardTitle></CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{client.description}</p>
+                </CardContent>
+              </Card>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card className="border">
                 <CardHeader><CardTitle className="text-base">Informacion General</CardTitle></CardHeader>
@@ -285,6 +491,7 @@ const ClientDetail = () => {
                     ["Anos operando", client.yearsOperating ? `${client.yearsOperating} anos` : "—"],
                     ["Empleados", client.employees || "—"],
                     ["Ingresos anuales", client.annualRevenue ? formatMoney(client.annualRevenue) : "—"],
+                    ["Estatus de Buro", client.buroStatus ? client.buroStatus.charAt(0).toUpperCase() + client.buroStatus.slice(1) : "—"],
                   ].map(([k, v]) => (
                     <div key={k as string} className="flex justify-between text-sm">
                       <span className="text-muted-foreground">{k}</span>
@@ -299,9 +506,9 @@ const ClientDetail = () => {
                   {[
                     ["Monto solicitado", formatMoney(client.amountRequested)],
                     ["Destino del credito", client.creditDestination || "—"],
+                    ["Tipo de producto", client.productType ? client.productType.replace(/([A-Z])/g, ' $1').trim() : "—"],
                     ["Etapa actual", statusLabels[client.status]],
                     ["Fecha de registro", client.createdAt],
-                    ["Analista asignado", client.analystEmail || "—"],
                     ["Analista asignado", client.analystEmail || "—"],
                   ].map(([k, v]) => (
                     <div key={k as string} className="flex justify-between text-sm">
@@ -312,6 +519,11 @@ const ClientDetail = () => {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* ===== MATCH TAB ===== */}
+          <TabsContent value="match" className="space-y-6">
+            <PartnerMatchSection client={client} />
           </TabsContent>
         </Tabs>
       </div>

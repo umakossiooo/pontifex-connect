@@ -64,6 +64,11 @@ export interface Client {
   employees?: number;
   annualRevenue?: number;
   creditDestination?: string;
+  description?: string;
+  buroStatus?: "excelente" | "bueno" | "regular" | "malo";
+  guaranteeTypes?: string[];
+  solvencyStatus?: "utilidad" | "perdida" | "quiebraTecnica";
+  productType?: string;
 }
 
 export type PartnerTier = "ORO" | "PLATA" | "BRONCE" | "REVISION";
