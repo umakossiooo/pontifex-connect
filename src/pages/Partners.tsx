@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import AppLayout from "@/components/AppLayout";
-import { mockPartners } from "@/data/mockData";
+import { allPartners } from "@/data/partnersData";
 import type { PartnerTier, PartnerType } from "@/types";
 
 const tierColors: Record<PartnerTier, string> = {
@@ -28,7 +28,7 @@ const Partners = () => {
   const [filterTier, setFilterTier] = useState<string>("all");
   const [filterType, setFilterType] = useState<string>("all");
 
-  const filtered = mockPartners.filter(p => {
+  const filtered = allPartners.filter(p => {
     const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
     const matchTier = filterTier === "all" || p.tier === filterTier;
     const matchType = filterType === "all" || p.type === filterType;
@@ -70,6 +70,8 @@ const Partners = () => {
               <SelectItem value="BANCO"><span className="flex items-center gap-2"><Landmark className="w-3 h-3" /> Banco</span></SelectItem>
               <SelectItem value="FINANCIERA"><span className="flex items-center gap-2"><CreditCard className="w-3 h-3" /> Financiera</span></SelectItem>
               <SelectItem value="FINTECH"><span className="flex items-center gap-2"><Cpu className="w-3 h-3" /> Fintech</span></SelectItem>
+              <SelectItem value="TPV"><span className="flex items-center gap-2"><CreditCard className="w-3 h-3" /> TPV</span></SelectItem>
+              <SelectItem value="BANCA DE INVERSION"><span className="flex items-center gap-2"><Building2 className="w-3 h-3" /> Banca de Inversion</span></SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -77,8 +79,8 @@ const Partners = () => {
         {/* Stats */}
         <div className="flex gap-3 mb-6 flex-wrap">
           <Badge variant="outline" className="px-3 py-1 text-sm">{filtered.length} instituciones</Badge>
-          <Badge className={`${tierColors.ORO} px-3 py-1 text-sm`}>{mockPartners.filter(p => p.tier === "ORO").length} Oro</Badge>
-          <Badge className={`${tierColors.PLATA} px-3 py-1 text-sm`}>{mockPartners.filter(p => p.tier === "PLATA").length} Plata</Badge>
+          <Badge className={`${tierColors.ORO} px-3 py-1 text-sm`}>{allPartners.filter(p => p.tier === "ORO").length} Oro</Badge>
+          <Badge className={`${tierColors.PLATA} px-3 py-1 text-sm`}>{allPartners.filter(p => p.tier === "PLATA").length} Plata</Badge>
         </div>
 
         {/* Grid */}
