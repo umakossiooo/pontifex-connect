@@ -300,8 +300,8 @@ const ClientDetail = () => {
                     ["Monto solicitado", formatMoney(client.amountRequested)],
                     ["Destino del credito", client.creditDestination || "—"],
                     ["Etapa actual", statusLabels[client.status]],
-                    ["Resultado", client.result === "en_proceso" ? "En proceso" : client.result],
                     ["Fecha de registro", client.createdAt],
+                    ["Analista asignado", client.analystEmail || "—"],
                     ["Analista asignado", client.analystEmail || "—"],
                   ].map(([k, v]) => (
                     <div key={k as string} className="flex justify-between text-sm">

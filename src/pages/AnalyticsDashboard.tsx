@@ -12,7 +12,8 @@ import {
   Legend, PieChart, Pie, Cell, LineChart, Line
 } from "recharts";
 import AppLayout from "@/components/AppLayout";
-import { mockClients, mockPartners, statusLabels } from "@/data/mockData";
+import { useClients } from "@/context/ClientContext";
+import { mockPartners, statusLabels } from "@/data/mockData";
 
 const CHART_COLORS = [
   "hsl(38, 72%, 56%)",   // accent/gold
@@ -25,14 +26,15 @@ const CHART_COLORS = [
 
 const AnalyticsDashboard = () => {
   const navigate = useNavigate();
+  const { clients: mockClients } = useClients();
 
   // KPI calculations
   const totalClients = mockClients.length;
-  const aprobados = mockClients.filter(c => c.result === "exitoso").length;
-  const rechazados = mockClients.filter(c => c.result === "declinado" || c.result === "rechazado_cliente").length;
-  const enAnalisis = mockClients.filter(c => c.status === "analisis" || c.status === "comite" || c.status === "integracion").length;
+  const aprobados = mockClients.filter(c => c.status === "aprobado").length;
+  const rechazados = mockClients.filter(c => c.status === "rechazado").length;
+  const enAnalisis = mockClients.filter(c => c.status === "en_analisis").length;
   const totalMonto = mockClients.reduce((a, c) => a + c.amountRequested, 0);
-  const montoAprobado = mockClients.filter(c => c.result === "exitoso").reduce((a, c) => a + c.amountRequested, 0);
+  const montoAprobado = mockClients.filter(c => c.status === "aprobado").reduce((a, c) => a + c.amountRequested, 0);
   const tasaAprobacion = totalClients > 0 ? ((aprobados / totalClients) * 100).toFixed(1) : "0";
   const docsCompletos = mockClients.filter(c => c.documents.every(d => d.uploaded)).length;
 
@@ -331,7 +333,7 @@ const AnalyticsDashboard = () => {
               {/* Alertas */}
               <div className="space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Alertas del Pipeline</p>
-                {mockClients.filter(c => c.documents.some(d => !d.uploaded) && c.status !== "prospeccion").map(c => (
+                {mockClients.filter(c => c.documents.some(d => !d.uploaded) && c.status === "en_analisis").map(c => (
                   <div key={c.id} className="flex items-center gap-2 p-2 rounded bg-warning/10 text-sm">
                     <AlertTriangle className="w-4 h-4 text-warning shrink-0" />
                     <span className="text-xs"><span className="font-semibold">{c.companyName}</span> — documentacion incompleta</span>

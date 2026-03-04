@@ -10,13 +10,15 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import AppLayout from "@/components/AppLayout";
 import ClientActionMenu from "@/components/ClientActionMenu";
-import { mockClients, statusLabels, statusColors } from "@/data/mockData";
+import { statusLabels, statusColors } from "@/data/mockData";
+import { useClients } from "@/context/ClientContext";
 import type { Sector } from "@/types";
 
 const sectors: Sector[] = ["Construcción", "Agricultura", "Transporte", "Comercio", "Industria", "Servicios", "Primario", "Tecnología", "Alimentos", "Manufactura"];
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { clients: mockClients } = useClients();
   const [search, setSearch] = useState("");
   const [showNewClient, setShowNewClient] = useState(false);
   const [newClientName, setNewClientName] = useState("");
@@ -31,9 +33,9 @@ const Dashboard = () => {
 
   const kpis = [
     { label: "TOTAL CLIENTES", value: mockClients.length, icon: BarChart3, color: "text-info" },
-    { label: "APROBADOS", value: mockClients.filter(c => c.result === "exitoso").length, sub: "Sin restricciones", icon: CheckCircle, color: "text-success" },
-    { label: "EN ANALISIS", value: mockClients.filter(c => c.status === "analisis").length, sub: "En proceso", icon: TrendingUp, color: "text-warning" },
-    { label: "RECHAZADOS", value: mockClients.filter(c => c.result === "declinado" || c.result === "rechazado_cliente").length, sub: "No aprobados", icon: XCircle, color: "text-destructive" },
+    { label: "APROBADOS", value: mockClients.filter(c => c.status === "aprobado").length, sub: "Sin restricciones", icon: CheckCircle, color: "text-success" },
+    { label: "EN ANALISIS", value: mockClients.filter(c => c.status === "en_analisis").length, sub: "En proceso", icon: TrendingUp, color: "text-warning" },
+    { label: "RECHAZADOS", value: mockClients.filter(c => c.status === "rechazado").length, sub: "No aprobados", icon: XCircle, color: "text-destructive" },
   ];
 
   const formatMoney = (n: number) => new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN", maximumFractionDigits: 0 }).format(n);

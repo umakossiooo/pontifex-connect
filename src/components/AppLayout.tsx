@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Shield, BarChart3, Briefcase, LogOut, ChevronRight, LayoutDashboard, Users, PanelLeftClose, PanelLeft } from "lucide-react";
 import { useState } from "react";
-import { mockClients } from "@/data/mockData";
+import { useClients } from "@/context/ClientContext";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -21,12 +21,12 @@ const AppLayout = ({ children }: AppLayoutProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
-
+  const { clients: mockClients } = useClients();
   const counts = {
     total: mockClients.length,
-    aprobados: mockClients.filter(c => c.result === "exitoso").length,
-    analisis: mockClients.filter(c => c.status === "analisis").length,
-    rechazados: mockClients.filter(c => c.result === "declinado" || c.result === "rechazado_cliente").length,
+    aprobados: mockClients.filter(c => c.status === "aprobado").length,
+    analisis: mockClients.filter(c => c.status === "en_analisis").length,
+    rechazados: mockClients.filter(c => c.status === "rechazado").length,
     faltaDocs: mockClients.filter(c => c.documents.some(d => !d.uploaded)).length,
   };
 
