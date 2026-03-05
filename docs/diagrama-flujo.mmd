@@ -1,0 +1,72 @@
+%% Flujo completo de la plataforma Pontifex Connect
+%% Registro empresa, subida PDF, expediente, dictamen y datos visualizados
+
+flowchart TB
+    subgraph ACCESO["Acceso"]
+        A([Inicio]) --> B[Login: email + contraseña]
+        B --> C[Dashboard / Mis Clientes]
+    end
+
+    subgraph DASH["Dashboard"]
+        C --> D[KPIs: Total · Aprobados · En análisis · Rechazados]
+        D --> E[Tabla: ID, Empresa, Sector, Monto, Estatus]
+        E --> F{Acción usuario}
+    end
+
+    subgraph REGISTRO["Registrar Empresa"]
+        F -->|Agregar Nuevo Cliente| G[Nombre empresa *]
+        G --> H[Sector *]
+        H --> I[Monto solicitado MXN *]
+        I --> J[Registrar Cliente]
+        J --> K[Cliente en lista - En análisis]
+        K --> C
+    end
+
+    subgraph EXPEDIENTE["Expediente - Subir documentos"]
+        F -->|Crear Expediente| W[Expediente del cliente]
+        W --> X[Checklist: Proyecto Inversión, Legal, Financiera, Fiscal, Buró]
+        X --> Z[Subir PDF / Excel / Word / CSV por documento]
+        Z --> AA[Progreso X de Y documentos]
+        AA --> AB[Extraer datos automáticamente]
+        AB --> AC[Datos extraídos]
+    end
+
+    subgraph EXP_DATOS["Datos en Expediente"]
+        AC --> AD[Estados Financieros: Resultados + Balance]
+        AC --> AE[Razones: Liquidez, Actividad, Apalancamiento, Rentabilidad]
+        AC --> AF[Flujos bancarios: Depósitos, Retiros, Saldo/mes]
+        AC --> AG[Capacidad de pago: Monto máximo recomendado]
+    end
+
+    subgraph DETALLE["Detalle - Dictamen"]
+        F -->|Clic fila / Generar Dictamen| L[Dictamen de Riesgo Crediticio]
+        L --> M{¿Documentación y score?}
+        M -->|No| N[Completar documentación y análisis]
+        N --> W
+        M -->|Sí| P[Pestaña Dictamen]
+    end
+
+    subgraph DICTAMEN_DATOS["Datos visualizados en Dictamen"]
+        P --> Q[Score Final 0-100 + Clase A/B/C]
+        P --> R[DSCR · Deuda/EBITDA]
+        P --> S[Semáforo Covenants: Capital contable >0, CxC >90d, ROE >5%]
+        P --> T[Gráfico: Flujo efectivo mensual - Ingresos vs Egresos]
+        P --> U[Razones: Circulante, Prueba ácida, ROA, ROE, Margen, Deuda total]
+        P --> V[Documentos · Info General · Instituciones Compatibles]
+    end
+
+    subgraph ACCIONES["Acciones"]
+        F -->|Menú ⋮| AH[Aprobar / Rechazar / Eliminar]
+        L --> AL[Descargar Reporte PDF]
+    end
+
+    AC -.->|Habilita dictamen| P
+
+    style ACCESO fill:#e8ecff
+    style DASH fill:#e8f5e9
+    style REGISTRO fill:#fff3e0
+    style EXPEDIENTE fill:#fce4ec
+    style EXP_DATOS fill:#f3e5f5
+    style DETALLE fill:#e0f2f1
+    style DICTAMEN_DATOS fill:#e1f5fe
+    style ACCIONES fill:#ffebee
