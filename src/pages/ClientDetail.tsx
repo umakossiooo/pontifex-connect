@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Download, TrendingUp, DollarSign, AlertTriangle, CheckCircle, XCircle, Upload, FileText, Building2, Landmark, CreditCard, Cpu, Globe, Award, Medal, Shield } from "lucide-react";
+import { ArrowLeft, Download, TrendingUp, DollarSign, AlertTriangle, CheckCircle, XCircle, Upload, FileText, Building2, Landmark, CreditCard, Cpu, Globe, Shield, HardHat, Tractor, Truck, ShoppingCart, Factory, Briefcase, Leaf, Utensils, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,9 +7,10 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import AppLayout from "@/components/AppLayout";
-import { mockClients, documentCategories, statusLabels, statusColors } from "@/data/mockData";
+import { documentCategories, statusLabels, statusColors } from "@/data/mockData";
 import { allPartners } from "@/data/partnersData";
-import type { DocumentCategory, Partner } from "@/types";
+import { useClients } from "@/context/ClientContext";
+import type { DocumentCategory, Partner, Client } from "@/types";
 
 const riskColors: Record<string, string> = {
   A: "text-success",
@@ -40,6 +41,19 @@ const typeIcons: Record<string, React.ReactNode> = {
   "BANCA DE INVERSION": <Building2 className="w-4 h-4" />,
 };
 
+const sectorIcons: Record<string, React.ReactNode> = {
+  "Construcción": <HardHat className="w-4 h-4 text-muted-foreground" />,
+  "Agricultura": <Tractor className="w-4 h-4 text-muted-foreground" />,
+  "Transporte": <Truck className="w-4 h-4 text-muted-foreground" />,
+  "Comercio": <ShoppingCart className="w-4 h-4 text-muted-foreground" />,
+  "Industria": <Factory className="w-4 h-4 text-muted-foreground" />,
+  "Servicios": <Briefcase className="w-4 h-4 text-muted-foreground" />,
+  "Primario": <Leaf className="w-4 h-4 text-muted-foreground" />,
+  "Tecnología": <Cpu className="w-4 h-4 text-muted-foreground" />,
+  "Alimentos": <Utensils className="w-4 h-4 text-muted-foreground" />,
+  "Manufactura": <Wrench className="w-4 h-4 text-muted-foreground" />,
+};
+
 const sectorMap: Record<string, keyof Partner["sectors"]> = {
   "Construcción": "industria",
   "Agricultura": "primario",
@@ -53,66 +67,33 @@ const sectorMap: Record<string, keyof Partner["sectors"]> = {
   "Manufactura": "industria",
 };
 
-function matchPartners(client: typeof mockClients[0]): { partner: Partner; score: number; reasons: string[] }[] {
+function matchPartners(client: Client): { partner: Partner; score: number; reasons: string[] }[] {
   return allPartners.map(partner => {
     let score = 0;
     const reasons: string[] = [];
 
-    // Sector match
     const sectorKey = sectorMap[client.sector];
-    if (sectorKey && partner.sectors[sectorKey]) {
-      score += 20;
-      reasons.push("Sector compatible");
-    }
+    if (sectorKey && partner.sectors[sectorKey]) { score += 20; reasons.push("Sector compatible"); }
 
-    // Buro match
     if (client.buroStatus) {
       const buroKey = client.buroStatus as keyof Partner["buró"];
-      if (partner.buró[buroKey]) {
-        score += 25;
-        reasons.push(`Acepta buro ${client.buroStatus}`);
-      }
+      if (partner.buró[buroKey]) { score += 25; reasons.push(`Acepta buro ${client.buroStatus}`); }
     }
 
-    // Experience match
     const years = client.yearsOperating || 0;
-    if (years >= 2 && partner.experience.twoOrMoreYears) {
-      score += 15;
-      reasons.push("Experiencia suficiente");
-    } else if (years >= 1 && partner.experience.oneYear) {
-      score += 10;
-      reasons.push("Experiencia minima aceptada");
-    } else if (years < 1 && partner.experience.lessThan1Year) {
-      score += 5;
-      reasons.push("Acepta empresas nuevas");
-    }
+    if (years >= 2 && partner.experience.twoOrMoreYears) { score += 15; reasons.push("Experiencia suficiente"); }
+    else if (years >= 1 && partner.experience.oneYear) { score += 10; reasons.push("Experiencia minima aceptada"); }
+    else if (years < 1 && partner.experience.lessThan1Year) { score += 5; reasons.push("Acepta empresas nuevas"); }
 
-    // Product match
-    if (client.productType && partner.products[client.productType as keyof Partner["products"]]) {
-      score += 20;
-      reasons.push("Producto disponible");
-    }
+    if (client.productType && partner.products[client.productType as keyof Partner["products"]]) { score += 20; reasons.push("Producto disponible"); }
 
-    // Solvency match
     if (client.solvencyStatus) {
       const solKey = client.solvencyStatus as keyof Partner["solvency"];
-      if (partner.solvency[solKey]) {
-        score += 10;
-        reasons.push("Solvencia aceptada");
-      }
+      if (partner.solvency[solKey]) { score += 10; reasons.push("Solvencia aceptada"); }
     }
 
-    // Contract bonus
-    if (partner.hasContract) {
-      score += 5;
-      reasons.push("Contrato vigente");
-    }
-
-    // Profitability bonus
-    if (partner.isProfitable) {
-      score += 5;
-      reasons.push("Rentable para Pontifex");
-    }
+    if (partner.hasContract) { score += 5; reasons.push("Contrato vigente"); }
+    if (partner.isProfitable) { score += 5; reasons.push("Rentable para Pontifex"); }
 
     return { partner, score, reasons };
   })
@@ -120,9 +101,10 @@ function matchPartners(client: typeof mockClients[0]): { partner: Partner; score
   .sort((a, b) => b.score - a.score);
 }
 
-const PartnerMatchSection = ({ client }: { client: typeof mockClients[0] }) => {
+const PartnerMatchSection = ({ client }: { client: Client }) => {
   const matches = matchPartners(client);
 
+  // Require score (dictamen completed) to show matches
   if (!client.score) {
     return (
       <Card className="border border-dashed">
@@ -166,7 +148,6 @@ const PartnerMatchSection = ({ client }: { client: typeof mockClients[0] }) => {
                 <Badge className={`${tierColors[partner.tier] || ""} text-xs border`}>{partner.tier}</Badge>
               </div>
 
-              {/* Compatibility score */}
               <div className="mb-3">
                 <div className="flex items-center justify-between text-xs mb-1">
                   <span className="text-muted-foreground">Compatibilidad</span>
@@ -175,14 +156,12 @@ const PartnerMatchSection = ({ client }: { client: typeof mockClients[0] }) => {
                 <Progress value={score} className="h-1.5" />
               </div>
 
-              {/* Match reasons */}
               <div className="flex flex-wrap gap-1 mb-3">
                 {reasons.map((r, i) => (
                   <Badge key={i} variant="secondary" className="text-xs">{r}</Badge>
                 ))}
               </div>
 
-              {/* Products */}
               <div className="flex flex-wrap gap-1 mb-3">
                 {partner.products.creditoSimple && <Badge variant="outline" className="text-xs">Credito Simple</Badge>}
                 {partner.products.creditoRevolvente && <Badge variant="outline" className="text-xs">Revolvente</Badge>}
@@ -222,7 +201,8 @@ const PartnerMatchSection = ({ client }: { client: typeof mockClients[0] }) => {
 const ClientDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const client = mockClients.find(c => c.id === id);
+  const { clients } = useClients();
+  const client = clients.find(c => c.id === id);
 
   if (!client) {
     return (
@@ -244,6 +224,9 @@ const ClientDetail = () => {
   const totalDocs = client.documents.length;
   const uploadedDocs = client.documents.filter(d => d.uploaded).length;
   const docProgress = totalDocs > 0 ? (uploadedDocs / totalDocs) * 100 : 0;
+
+  // Dictamen is available if client has score OR if enough docs are uploaded (>= 50%)
+  const dictamenAvailable = !!client.score || docProgress >= 50;
 
   const formatMoney = (n: number) => new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN", maximumFractionDigits: 0 }).format(n);
 
@@ -275,7 +258,7 @@ const ClientDetail = () => {
               <ArrowLeft className="w-4 h-4" /> Volver a clientes
             </button>
             <p className="text-xs text-muted-foreground flex items-center gap-1">
-              <Building2 className="w-3 h-3" /> {client.companyName} · #{client.id}
+              {sectorIcons[client.sector] || <Building2 className="w-3 h-3" />} {client.companyName} · #{client.id}
             </p>
             <h1 className="text-2xl font-bold">Dictamen de Riesgo Crediticio</h1>
           </div>
@@ -294,7 +277,7 @@ const ClientDetail = () => {
 
           {/* ===== DICTAMEN TAB ===== */}
           <TabsContent value="dictamen" className="space-y-6">
-            {client.score ? (
+            {dictamenAvailable && client.score ? (
               <>
                 {/* Score Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -410,11 +393,17 @@ const ClientDetail = () => {
                   <h3 className="text-lg font-bold mb-2">Dictamen no disponible</h3>
                   <p className="text-muted-foreground text-sm max-w-md mx-auto">
                     Se requiere completar la documentacion y el analisis financiero para generar el dictamen de riesgo crediticio.
+                    {docProgress < 50 
+                      ? " Sube al menos el 50% de los documentos requeridos en el Expediente."
+                      : " Completa el expediente y ejecuta la extraccion de datos."}
                   </p>
                   <p className="text-sm mt-4">
                     <span className="font-semibold">Documentos subidos:</span> {uploadedDocs} de {totalDocs}
                   </p>
                   <Progress value={docProgress} className="mt-2 max-w-xs mx-auto" />
+                  <Button variant="outline" className="mt-4" onClick={() => navigate(`/client/${client.id}/expediente`)}>
+                    Ir al Expediente
+                  </Button>
                 </CardContent>
               </Card>
             )}
@@ -470,7 +459,6 @@ const ClientDetail = () => {
 
           {/* ===== INFO TAB ===== */}
           <TabsContent value="info" className="space-y-6">
-            {/* Client Description */}
             {client.description && (
               <Card className="border">
                 <CardHeader><CardTitle className="text-base flex items-center gap-2"><Building2 className="w-4 h-4 text-accent" /> Descripcion de la Empresa</CardTitle></CardHeader>
@@ -495,7 +483,7 @@ const ClientDetail = () => {
                   ].map(([k, v]) => (
                     <div key={k as string} className="flex justify-between text-sm">
                       <span className="text-muted-foreground">{k}</span>
-                      <span className="font-medium">{v}</span>
+                      <span className="font-medium">{String(v)}</span>
                     </div>
                   ))}
                 </CardContent>

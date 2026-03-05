@@ -9,15 +9,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import AppLayout from "@/components/AppLayout";
-import { mockClients, documentCategories } from "@/data/mockData";
+import { documentCategories } from "@/data/mockData";
+import { useClients } from "@/context/ClientContext";
 import type { DocumentCategory } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 
-// Simulated extracted data from documents
 interface ExtractedFinancials {
   year: string;
   ventasNetas: number;
@@ -110,8 +107,8 @@ const ClientExpediente = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const client = mockClients.find(c => c.id === id);
-  const [uploadedFiles, setUploadedFiles] = useState<Record<string, File | null>>({});
+  const { clients, uploadDocument } = useClients();
+  const client = clients.find(c => c.id === id);
   const [extracting, setExtracting] = useState<string | null>(null);
   const [extractedData, setExtractedData] = useState<boolean>(false);
 
@@ -133,8 +130,8 @@ const ClientExpediente = () => {
   }));
 
   const totalDocs = client.documents.length;
-  const uploadedDocs = client.documents.filter(d => d.uploaded).length + Object.keys(uploadedFiles).length;
-  const docProgress = totalDocs > 0 ? Math.min((uploadedDocs / totalDocs) * 100, 100) : 0;
+  const uploadedDocs = client.documents.filter(d => d.uploaded).length;
+  const docProgress = totalDocs > 0 ? (uploadedDocs / totalDocs) * 100 : 0;
 
   const handleFileUpload = (docId: string) => {
     const input = document.createElement("input");
@@ -143,8 +140,8 @@ const ClientExpediente = () => {
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
-        setUploadedFiles(prev => ({ ...prev, [docId]: file }));
-        toast({ title: "Archivo cargado", description: `${file.name} se subio correctamente.` });
+        uploadDocument(client.id, docId, file.name);
+        toast({ title: "Archivo cargado", description: `${file.name} se subió correctamente.` });
       }
     };
     input.click();
@@ -246,44 +243,37 @@ const ClientExpediente = () => {
                     <FileText className="w-4 h-4 text-accent" />
                     {label}
                     <Badge variant="secondary" className="text-xs ml-2">
-                      {docs.filter(d => d.uploaded || uploadedFiles[d.id]).length}/{docs.length}
+                      {docs.filter(d => d.uploaded).length}/{docs.length}
                     </Badge>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  {docs.map(doc => {
-                    const isUploaded = doc.uploaded || uploadedFiles[doc.id];
-                    const uploadedFile = uploadedFiles[doc.id];
-                    return (
-                      <div key={doc.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
-                        <div className="flex items-center gap-3">
-                          {isUploaded ? (
-                            <CheckCircle className="w-5 h-5 text-success" />
-                          ) : (
-                            <div className="w-5 h-5 rounded-full border-2 border-muted-foreground/30" />
+                  {docs.map(doc => (
+                    <div key={doc.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+                      <div className="flex items-center gap-3">
+                        {doc.uploaded ? (
+                          <CheckCircle className="w-5 h-5 text-success" />
+                        ) : (
+                          <div className="w-5 h-5 rounded-full border-2 border-muted-foreground/30" />
+                        )}
+                        <div>
+                          <p className="text-sm font-medium">{doc.name}</p>
+                          {doc.uploaded && (
+                            <p className="text-xs text-success">{doc.fileName} · {doc.uploadDate}</p>
                           )}
-                          <div>
-                            <p className="text-sm font-medium">{doc.name}</p>
-                            {doc.uploaded && (
-                              <p className="text-xs text-muted-foreground">{doc.fileName} - {doc.uploadDate}</p>
-                            )}
-                            {uploadedFile && (
-                              <p className="text-xs text-success">{uploadedFile.name} - Recien subido</p>
-                            )}
-                          </div>
                         </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="gap-1 text-xs"
-                          onClick={() => handleFileUpload(doc.id)}
-                        >
-                          <Upload className="w-3 h-3" />
-                          {isUploaded ? "Reemplazar" : "Subir"}
-                        </Button>
                       </div>
-                    );
-                  })}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1 text-xs"
+                        onClick={() => handleFileUpload(doc.id)}
+                      >
+                        <Upload className="w-3 h-3" />
+                        {doc.uploaded ? "Reemplazar" : "Subir"}
+                      </Button>
+                    </div>
+                  ))}
                 </CardContent>
               </Card>
             ))}
