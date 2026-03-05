@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Search, BarChart3, CheckCircle, TrendingUp, XCircle, FileCheck, Building2, Tag, DollarSign } from "lucide-react";
+import { Plus, Search, BarChart3, CheckCircle, TrendingUp, XCircle, FileCheck, Tag, DollarSign, Building2, Tractor, Truck, ShoppingCart, Factory, Briefcase, Leaf, Cpu, Utensils, Wrench, HardHat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -12,13 +12,28 @@ import AppLayout from "@/components/AppLayout";
 import ClientActionMenu from "@/components/ClientActionMenu";
 import { statusLabels, statusColors } from "@/data/mockData";
 import { useClients } from "@/context/ClientContext";
+import { useToast } from "@/hooks/use-toast";
 import type { Sector } from "@/types";
 
 const sectors: Sector[] = ["Construcción", "Agricultura", "Transporte", "Comercio", "Industria", "Servicios", "Primario", "Tecnología", "Alimentos", "Manufactura"];
 
+const sectorIcons: Record<string, React.ReactNode> = {
+  "Construcción": <HardHat className="w-3.5 h-3.5 text-muted-foreground" />,
+  "Agricultura": <Tractor className="w-3.5 h-3.5 text-muted-foreground" />,
+  "Transporte": <Truck className="w-3.5 h-3.5 text-muted-foreground" />,
+  "Comercio": <ShoppingCart className="w-3.5 h-3.5 text-muted-foreground" />,
+  "Industria": <Factory className="w-3.5 h-3.5 text-muted-foreground" />,
+  "Servicios": <Briefcase className="w-3.5 h-3.5 text-muted-foreground" />,
+  "Primario": <Leaf className="w-3.5 h-3.5 text-muted-foreground" />,
+  "Tecnología": <Cpu className="w-3.5 h-3.5 text-muted-foreground" />,
+  "Alimentos": <Utensils className="w-3.5 h-3.5 text-muted-foreground" />,
+  "Manufactura": <Wrench className="w-3.5 h-3.5 text-muted-foreground" />,
+};
+
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { clients: mockClients } = useClients();
+  const { clients: mockClients, addClient } = useClients();
+  const { toast } = useToast();
   const [search, setSearch] = useState("");
   const [showNewClient, setShowNewClient] = useState(false);
   const [newClientName, setNewClientName] = useState("");
@@ -39,6 +54,19 @@ const Dashboard = () => {
   ];
 
   const formatMoney = (n: number) => new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN", maximumFractionDigits: 0 }).format(n);
+
+  const handleRegister = () => {
+    if (!newClientName.trim() || !newClientSector || !newClientAmount) {
+      toast({ title: "Campos requeridos", description: "Completa todos los campos para registrar al cliente.", variant: "destructive" });
+      return;
+    }
+    addClient(newClientName.trim(), newClientSector as Sector, Number(newClientAmount));
+    toast({ title: "Cliente registrado", description: `${newClientName} se agregó al pipeline.` });
+    setNewClientName("");
+    setNewClientSector("");
+    setNewClientAmount("");
+    setShowNewClient(false);
+  };
 
   return (
     <AppLayout>
@@ -102,7 +130,9 @@ const Dashboard = () => {
               </thead>
               <tbody>
                 {filtered.map((client, i) => {
-                  const docsComplete = client.documents.every(d => d.uploaded);
+                  const uploadedDocs = client.documents.filter(d => d.uploaded).length;
+                  const totalDocs = client.documents.length;
+                  const hasDocs = uploadedDocs > 0;
                   return (
                     <tr
                       key={client.id}
@@ -118,9 +148,17 @@ const Dashboard = () => {
                           </div>
                           <div>
                             <p className="font-semibold text-sm">{client.companyName}</p>
-                            {docsComplete && client.score && (
+                            {client.score ? (
                               <p className="text-xs text-success flex items-center gap-1">
                                 <FileCheck className="w-3 h-3" /> Dictamen generado
+                              </p>
+                            ) : !hasDocs ? (
+                              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                Falta documentación
+                              </p>
+                            ) : (
+                              <p className="text-xs text-info flex items-center gap-1">
+                                {uploadedDocs}/{totalDocs} docs
                               </p>
                             )}
                           </div>
@@ -128,7 +166,7 @@ const Dashboard = () => {
                       </td>
                       <td className="p-4 text-sm">
                         <span className="flex items-center gap-2">
-                          <Building2 className="w-3.5 h-3.5 text-muted-foreground" /> {client.sector}
+                          {sectorIcons[client.sector] || <Building2 className="w-3.5 h-3.5 text-muted-foreground" />} {client.sector}
                         </span>
                       </td>
                       <td className="p-4 text-sm font-medium">{formatMoney(client.amountRequested)}</td>
@@ -215,7 +253,7 @@ const Dashboard = () => {
               <Button variant="outline" className="flex-1 h-11" onClick={() => setShowNewClient(false)}>
                 Cancelar
               </Button>
-              <Button className="flex-1 h-11 bg-accent hover:bg-accent/90 text-accent-foreground font-semibold" onClick={() => setShowNewClient(false)}>
+              <Button className="flex-1 h-11 bg-accent hover:bg-accent/90 text-accent-foreground font-semibold" onClick={handleRegister}>
                 Registrar Cliente
               </Button>
             </div>
