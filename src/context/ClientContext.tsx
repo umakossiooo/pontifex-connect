@@ -71,15 +71,36 @@ export const ClientProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const uploadDocument = (clientId: string, docId: string, fileName: string) => {
+    const fileExt = fileName.split('.').pop()?.toLowerCase() || 'pdf';
+    const newFile = {
+      id: `f_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      fileName,
+      uploadDate: new Date().toISOString().split("T")[0],
+      fileType: fileExt,
+    };
     setClients(prev => prev.map(c => {
       if (c.id !== clientId) return c;
       return {
         ...c,
         documents: c.documents.map(d =>
           d.id === docId
-            ? { ...d, uploaded: true, fileName, uploadDate: new Date().toISOString().split("T")[0] }
+            ? { ...d, uploaded: true, files: [...d.files, newFile] }
             : d
         ),
+      };
+    }));
+  };
+
+  const removeFile = (clientId: string, docId: string, fileId: string) => {
+    setClients(prev => prev.map(c => {
+      if (c.id !== clientId) return c;
+      return {
+        ...c,
+        documents: c.documents.map(d => {
+          if (d.id !== docId) return d;
+          const updatedFiles = d.files.filter(f => f.id !== fileId);
+          return { ...d, files: updatedFiles, uploaded: updatedFiles.length > 0 };
+        }),
       };
     }));
   };
