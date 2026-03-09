@@ -265,29 +265,50 @@ const ClientExpediente = () => {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {docs.map(doc => (
-                    <div key={doc.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
-                      <div className="flex items-center gap-3">
-                        {doc.uploaded ? (
-                          <CheckCircle className="w-5 h-5 text-success" />
-                        ) : (
-                          <div className="w-5 h-5 rounded-full border-2 border-muted-foreground/30" />
-                        )}
-                        <div>
-                          <p className="text-sm font-medium">{doc.name}</p>
-                          {doc.uploaded && (
-                            <p className="text-xs text-success">{doc.fileName} · {doc.uploadDate}</p>
+                    <div key={doc.id} className="p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          {doc.uploaded ? (
+                            <CheckCircle className="w-5 h-5 text-success" />
+                          ) : (
+                            <div className="w-5 h-5 rounded-full border-2 border-muted-foreground/30" />
                           )}
+                          <div>
+                            <p className="text-sm font-medium">{doc.name}</p>
+                            {doc.files.length > 0 && (
+                              <p className="text-xs text-muted-foreground">{doc.files.length} archivo{doc.files.length > 1 ? "s" : ""}</p>
+                            )}
+                          </div>
                         </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="gap-1 text-xs"
+                          onClick={() => handleFileUpload(doc.id)}
+                        >
+                          <Plus className="w-3 h-3" />
+                          {doc.uploaded ? "Agregar más" : "Subir"}
+                        </Button>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-1 text-xs"
-                        onClick={() => handleFileUpload(doc.id)}
-                      >
-                        <Upload className="w-3 h-3" />
-                        {doc.uploaded ? "Reemplazar" : "Subir"}
-                      </Button>
+                      {doc.files.length > 0 && (
+                        <div className="mt-2 ml-8 space-y-1">
+                          {doc.files.map(file => (
+                            <div key={file.id} className="flex items-center justify-between py-1.5 px-2 rounded bg-background border text-xs">
+                              <div className="flex items-center gap-2">
+                                {fileIcon(file.fileType)}
+                                <span className="font-medium">{file.fileName}</span>
+                                <span className="text-muted-foreground">{file.uploadDate}</span>
+                              </div>
+                              <button
+                                onClick={() => handleRemoveFile(doc.id, file.id)}
+                                className="text-muted-foreground hover:text-destructive transition-colors"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </CardContent>
