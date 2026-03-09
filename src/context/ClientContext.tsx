@@ -106,7 +106,7 @@ export const ClientProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <ClientContext.Provider value={{ clients, updateStatus, deleteClient, addClient, uploadDocument }}>
+    <ClientContext.Provider value={{ clients, updateStatus, deleteClient, addClient, uploadDocument, removeFile }}>
       {children}
     </ClientContext.Provider>
   );
