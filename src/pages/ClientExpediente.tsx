@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Upload, FileText, CheckCircle, AlertTriangle, Download,
-  FileSpreadsheet, TrendingUp, DollarSign, BarChart3, Building2, Clock
+  FileSpreadsheet, TrendingUp, DollarSign, BarChart3, Building2, Clock,
+  X, Plus, File, FileImage
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
