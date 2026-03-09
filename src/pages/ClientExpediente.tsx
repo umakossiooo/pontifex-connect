@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Upload, FileText, CheckCircle, AlertTriangle, Download,
-  FileSpreadsheet, TrendingUp, DollarSign, BarChart3, Building2, Clock
+  FileSpreadsheet, TrendingUp, DollarSign, BarChart3, Building2, Clock,
+  X, Plus, File, FileImage
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -107,7 +108,7 @@ const ClientExpediente = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { clients, uploadDocument } = useClients();
+  const { clients, uploadDocument, removeFile } = useClients();
   const client = clients.find(c => c.id === id);
   const [extracting, setExtracting] = useState<string | null>(null);
   const [extractedData, setExtractedData] = useState<boolean>(false);
@@ -131,20 +132,35 @@ const ClientExpediente = () => {
 
   const totalDocs = client.documents.length;
   const uploadedDocs = client.documents.filter(d => d.uploaded).length;
+  const totalFiles = client.documents.reduce((acc, d) => acc + d.files.length, 0);
   const docProgress = totalDocs > 0 ? (uploadedDocs / totalDocs) * 100 : 0;
 
   const handleFileUpload = (docId: string) => {
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = ".pdf,.xlsx,.xls,.doc,.docx,.csv";
+    input.accept = ".pdf,.xlsx,.xls,.doc,.docx,.csv,.jpg,.jpeg,.png,.pptx";
+    input.multiple = true;
     input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        uploadDocument(client.id, docId, file.name);
-        toast({ title: "Archivo cargado", description: `${file.name} se subió correctamente.` });
+      const files = (e.target as HTMLInputElement).files;
+      if (files) {
+        Array.from(files).forEach(file => {
+          uploadDocument(client.id, docId, file.name);
+          toast({ title: "Archivo cargado", description: `${file.name} se subió correctamente.` });
+        });
       }
     };
     input.click();
+  };
+
+  const handleRemoveFile = (docId: string, fileId: string) => {
+    removeFile(client.id, docId, fileId);
+    toast({ title: "Archivo eliminado", description: "El archivo fue removido del expediente." });
+  };
+
+  const fileIcon = (fileType: string) => {
+    if (["jpg", "jpeg", "png"].includes(fileType)) return <FileImage className="w-3.5 h-3.5 text-muted-foreground" />;
+    if (["xlsx", "xls", "csv"].includes(fileType)) return <FileSpreadsheet className="w-3.5 h-3.5 text-muted-foreground" />;
+    return <File className="w-3.5 h-3.5 text-muted-foreground" />;
   };
 
   const handleExtractAll = () => {
@@ -215,7 +231,7 @@ const ClientExpediente = () => {
             <div className="flex items-center justify-between mb-3">
               <div>
                 <p className="text-sm font-semibold">Progreso del expediente</p>
-                <p className="text-xs text-muted-foreground">{uploadedDocs} de {totalDocs} documentos recibidos</p>
+              <p className="text-xs text-muted-foreground">{uploadedDocs} de {totalDocs} apartados con archivos · {totalFiles} archivos totales</p>
               </div>
               <Badge variant={docProgress === 100 ? "default" : "secondary"} className="text-xs">
                 {Math.round(docProgress)}% completo
@@ -249,29 +265,50 @@ const ClientExpediente = () => {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {docs.map(doc => (
-                    <div key={doc.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
-                      <div className="flex items-center gap-3">
-                        {doc.uploaded ? (
-                          <CheckCircle className="w-5 h-5 text-success" />
-                        ) : (
-                          <div className="w-5 h-5 rounded-full border-2 border-muted-foreground/30" />
-                        )}
-                        <div>
-                          <p className="text-sm font-medium">{doc.name}</p>
-                          {doc.uploaded && (
-                            <p className="text-xs text-success">{doc.fileName} · {doc.uploadDate}</p>
+                    <div key={doc.id} className="p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          {doc.uploaded ? (
+                            <CheckCircle className="w-5 h-5 text-success" />
+                          ) : (
+                            <div className="w-5 h-5 rounded-full border-2 border-muted-foreground/30" />
                           )}
+                          <div>
+                            <p className="text-sm font-medium">{doc.name}</p>
+                            {doc.files.length > 0 && (
+                              <p className="text-xs text-muted-foreground">{doc.files.length} archivo{doc.files.length > 1 ? "s" : ""}</p>
+                            )}
+                          </div>
                         </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="gap-1 text-xs"
+                          onClick={() => handleFileUpload(doc.id)}
+                        >
+                          <Plus className="w-3 h-3" />
+                          {doc.uploaded ? "Agregar más" : "Subir"}
+                        </Button>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-1 text-xs"
-                        onClick={() => handleFileUpload(doc.id)}
-                      >
-                        <Upload className="w-3 h-3" />
-                        {doc.uploaded ? "Reemplazar" : "Subir"}
-                      </Button>
+                      {doc.files.length > 0 && (
+                        <div className="mt-2 ml-8 space-y-1">
+                          {doc.files.map(file => (
+                            <div key={file.id} className="flex items-center justify-between py-1.5 px-2 rounded bg-background border text-xs">
+                              <div className="flex items-center gap-2">
+                                {fileIcon(file.fileType)}
+                                <span className="font-medium">{file.fileName}</span>
+                                <span className="text-muted-foreground">{file.uploadDate}</span>
+                              </div>
+                              <button
+                                onClick={() => handleRemoveFile(doc.id, file.id)}
+                                className="text-muted-foreground hover:text-destructive transition-colors"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </CardContent>

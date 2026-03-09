@@ -432,7 +432,7 @@ const ClientDetail = () => {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {docs.map(doc => (
-                    <div key={doc.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+                    <div key={doc.id} className="p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
                       <div className="flex items-center gap-3">
                         {doc.uploaded ? (
                           <CheckCircle className="w-5 h-5 text-success" />
@@ -441,15 +441,22 @@ const ClientDetail = () => {
                         )}
                         <div>
                           <p className="text-sm font-medium">{doc.name}</p>
-                          {doc.uploaded && (
-                            <p className="text-xs text-muted-foreground">{doc.fileName} · {doc.uploadDate}</p>
+                          {doc.files.length > 0 && (
+                            <p className="text-xs text-muted-foreground">{doc.files.length} archivo{doc.files.length > 1 ? "s" : ""} subido{doc.files.length > 1 ? "s" : ""}</p>
                           )}
                         </div>
                       </div>
-                      <Button variant="outline" size="sm" className="gap-1 text-xs">
-                        <Upload className="w-3 h-3" />
-                        {doc.uploaded ? "Reemplazar" : "Subir"}
-                      </Button>
+                      {doc.files.length > 0 && (
+                        <div className="mt-2 ml-8 space-y-1">
+                          {doc.files.map(file => (
+                            <div key={file.id} className="flex items-center gap-2 py-1 px-2 rounded bg-background border text-xs">
+                              <FileText className="w-3 h-3 text-muted-foreground" />
+                              <span className="font-medium">{file.fileName}</span>
+                              <span className="text-muted-foreground">{file.uploadDate}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </CardContent>

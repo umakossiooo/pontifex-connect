@@ -2,29 +2,29 @@ import type { Client, Partner, DocumentItem, DocumentCategory } from "@/types";
 
 const createDocumentChecklist = (): DocumentItem[] => [
   // Proyecto de Inversión
-  { id: "d1", name: "Presentación / Curriculum de la empresa", category: "proyecto_inversion", uploaded: false },
-  { id: "d2", name: "Resumen ejecutivo", category: "proyecto_inversion", uploaded: false },
-  { id: "d3", name: "Proyecciones financieras", category: "proyecto_inversion", uploaded: false },
-  { id: "d4", name: "Cuadro descriptivo estructura directiva", category: "proyecto_inversion", uploaded: false },
-  { id: "d5", name: "CV principales directivos y socios", category: "proyecto_inversion", uploaded: false },
+  { id: "d1", name: "Presentación / Curriculum de la empresa", category: "proyecto_inversion", uploaded: false, files: [] },
+  { id: "d2", name: "Resumen ejecutivo", category: "proyecto_inversion", uploaded: false, files: [] },
+  { id: "d3", name: "Proyecciones financieras", category: "proyecto_inversion", uploaded: false, files: [] },
+  { id: "d4", name: "Cuadro descriptivo estructura directiva", category: "proyecto_inversion", uploaded: false, files: [] },
+  { id: "d5", name: "CV principales directivos y socios", category: "proyecto_inversion", uploaded: false, files: [] },
   // Legal
-  { id: "d6", name: "Acta Constitutiva", category: "legal", uploaded: false },
-  { id: "d7", name: "Poderes y Asambleas", category: "legal", uploaded: false },
+  { id: "d6", name: "Acta Constitutiva", category: "legal", uploaded: false, files: [] },
+  { id: "d7", name: "Poderes y Asambleas", category: "legal", uploaded: false, files: [] },
   // Financiera
-  { id: "d8", name: "Estados Financieros 2019", category: "financiera", uploaded: true, fileName: "EF_2019.pdf", uploadDate: "2025-12-01" },
-  { id: "d9", name: "Estados Financieros 2020", category: "financiera", uploaded: true, fileName: "EF_2020.pdf", uploadDate: "2025-12-01" },
-  { id: "d10", name: "Estado Financiero Parcial 2021", category: "financiera", uploaded: false },
-  { id: "d11", name: "Estados de cuenta bancarios (últimos 12 meses)", category: "financiera", uploaded: false },
-  { id: "d12", name: "Proyecciones Financieras del proyecto", category: "financiera", uploaded: false },
+  { id: "d8", name: "Estados Financieros 2019", category: "financiera", uploaded: true, files: [{ id: "f8", fileName: "EF_2019.pdf", uploadDate: "2025-12-01", fileType: "pdf" }] },
+  { id: "d9", name: "Estados Financieros 2020", category: "financiera", uploaded: true, files: [{ id: "f9", fileName: "EF_2020.pdf", uploadDate: "2025-12-01", fileType: "pdf" }] },
+  { id: "d10", name: "Estado Financiero Parcial 2021", category: "financiera", uploaded: false, files: [] },
+  { id: "d11", name: "Estados de cuenta bancarios (últimos 12 meses)", category: "financiera", uploaded: false, files: [] },
+  { id: "d12", name: "Proyecciones Financieras del proyecto", category: "financiera", uploaded: false, files: [] },
   // Fiscal
-  { id: "d13", name: "Constancia de Situación Fiscal", category: "fiscal", uploaded: true, fileName: "CSF.pdf", uploadDate: "2025-11-15" },
-  { id: "d14", name: "Declaración anual 2019", category: "fiscal", uploaded: false },
-  { id: "d15", name: "Declaración anual 2020", category: "fiscal", uploaded: false },
-  { id: "d16", name: "Últimas 3 declaraciones provisionales", category: "fiscal", uploaded: false },
-  { id: "d17", name: "Comprobante de domicilio fiscal", category: "fiscal", uploaded: true, fileName: "domicilio.pdf", uploadDate: "2025-11-20" },
+  { id: "d13", name: "Constancia de Situación Fiscal", category: "fiscal", uploaded: true, files: [{ id: "f13", fileName: "CSF.pdf", uploadDate: "2025-11-15", fileType: "pdf" }] },
+  { id: "d14", name: "Declaración anual 2019", category: "fiscal", uploaded: false, files: [] },
+  { id: "d15", name: "Declaración anual 2020", category: "fiscal", uploaded: false, files: [] },
+  { id: "d16", name: "Últimas 3 declaraciones provisionales", category: "fiscal", uploaded: false, files: [] },
+  { id: "d17", name: "Comprobante de domicilio fiscal", category: "fiscal", uploaded: true, files: [{ id: "f17", fileName: "domicilio.pdf", uploadDate: "2025-11-20", fileType: "pdf" }] },
   // Buró
-  { id: "d18", name: "Reporte buró de crédito Especial PM", category: "buro_credito", uploaded: false },
-  { id: "d19", name: "Reporte buró de crédito Especial Socios/RL", category: "buro_credito", uploaded: false },
+  { id: "d18", name: "Reporte buró de crédito Especial PM", category: "buro_credito", uploaded: false, files: [] },
+  { id: "d19", name: "Reporte buró de crédito Especial Socios/RL", category: "buro_credito", uploaded: false, files: [] },
 ];
 
 export const mockClients: Client[] = [
@@ -50,7 +50,7 @@ export const mockClients: Client[] = [
     guaranteeTypes: ["avalObligado", "hipotecaria"],
     solvencyStatus: "utilidad",
     productType: "creditoSimple",
-    documents: createDocumentChecklist().map((d, i) => i < 5 ? { ...d, uploaded: true, fileName: `doc_${d.id}.pdf`, uploadDate: "2025-11-20" } : d),
+    documents: createDocumentChecklist().map((d, i) => i < 5 ? { ...d, uploaded: true, files: [{ id: `f_${d.id}`, fileName: `doc_${d.id}.pdf`, uploadDate: "2025-11-20", fileType: "pdf" }] } : d),
     financialRatios: [
       { name: "Razón Circulante", value: 1.4, status: "warning" },
       { name: "Prueba Ácida", value: 0.9, status: "warning" },
@@ -118,7 +118,7 @@ export const mockClients: Client[] = [
     guaranteeTypes: ["avalObligado", "prendaria"],
     solvencyStatus: "utilidad",
     productType: "creditoSimple",
-    documents: createDocumentChecklist().map(d => ({ ...d, uploaded: true, fileName: `${d.id}.pdf`, uploadDate: "2025-10-25" })),
+    documents: createDocumentChecklist().map(d => ({ ...d, uploaded: true, files: [{ id: `f_${d.id}`, fileName: `${d.id}.pdf`, uploadDate: "2025-10-25", fileType: "pdf" }] })),
     financialRatios: [
       { name: "Razón Circulante", value: 1.8, status: "healthy" },
       { name: "Prueba Ácida", value: 1.2, status: "healthy" },
@@ -186,7 +186,7 @@ export const mockClients: Client[] = [
     guaranteeTypes: ["avalObligado"],
     solvencyStatus: "utilidad",
     productType: "creditoSimple",
-    documents: createDocumentChecklist().map(d => ({ ...d, uploaded: true, fileName: `${d.id}.pdf`, uploadDate: "2025-09-10" })),
+    documents: createDocumentChecklist().map(d => ({ ...d, uploaded: true, files: [{ id: `f_${d.id}`, fileName: `${d.id}.pdf`, uploadDate: "2025-09-10", fileType: "pdf" }] })),
     financialRatios: [
       { name: "Razón Circulante", value: 2.4, status: "healthy" },
       { name: "Prueba Ácida", value: 1.8, status: "healthy" },
