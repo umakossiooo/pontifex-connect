@@ -231,7 +231,7 @@ const ClientExpediente = () => {
             <div className="flex items-center justify-between mb-3">
               <div>
                 <p className="text-sm font-semibold">Progreso del expediente</p>
-                <p className="text-xs text-muted-foreground">{uploadedDocs} de {totalDocs} documentos recibidos</p>
+              <p className="text-xs text-muted-foreground">{uploadedDocs} de {totalDocs} apartados con archivos · {totalFiles} archivos totales</p>
               </div>
               <Badge variant={docProgress === 100 ? "default" : "secondary"} className="text-xs">
                 {Math.round(docProgress)}% completo
