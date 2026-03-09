@@ -108,7 +108,7 @@ const ClientExpediente = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { clients, uploadDocument } = useClients();
+  const { clients, uploadDocument, removeFile } = useClients();
   const client = clients.find(c => c.id === id);
   const [extracting, setExtracting] = useState<string | null>(null);
   const [extractedData, setExtractedData] = useState<boolean>(false);
