@@ -132,6 +132,7 @@ const ClientExpediente = () => {
 
   const totalDocs = client.documents.length;
   const uploadedDocs = client.documents.filter(d => d.uploaded).length;
+  const totalFiles = client.documents.reduce((acc, d) => acc + d.files.length, 0);
   const docProgress = totalDocs > 0 ? (uploadedDocs / totalDocs) * 100 : 0;
 
   const handleFileUpload = (docId: string) => {
