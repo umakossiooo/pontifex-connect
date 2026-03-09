@@ -8,6 +8,7 @@ interface ClientContextType {
   deleteClient: (id: string) => void;
   addClient: (name: string, sector: Sector, amount: number) => void;
   uploadDocument: (clientId: string, docId: string, fileName: string) => void;
+  removeFile: (clientId: string, docId: string, fileId: string) => void;
 }
 
 const ClientContext = createContext<ClientContextType | null>(null);

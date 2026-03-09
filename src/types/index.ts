@@ -16,12 +16,22 @@ export type Sector =
 
 export type DocumentCategory = "proyecto_inversion" | "legal" | "financiera" | "fiscal" | "buro_credito";
 
+export interface UploadedFile {
+  id: string;
+  fileName: string;
+  uploadDate: string;
+  fileType: string;
+}
+
 export interface DocumentItem {
   id: string;
   name: string;
   category: DocumentCategory;
   uploaded: boolean;
+  files: UploadedFile[];
+  /** @deprecated Use files array instead */
   fileName?: string;
+  /** @deprecated Use files array instead */
   uploadDate?: string;
 }
 
