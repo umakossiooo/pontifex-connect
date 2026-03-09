@@ -138,15 +138,29 @@ const ClientExpediente = () => {
   const handleFileUpload = (docId: string) => {
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = ".pdf,.xlsx,.xls,.doc,.docx,.csv";
+    input.accept = ".pdf,.xlsx,.xls,.doc,.docx,.csv,.jpg,.jpeg,.png,.pptx";
+    input.multiple = true;
     input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        uploadDocument(client.id, docId, file.name);
-        toast({ title: "Archivo cargado", description: `${file.name} se subió correctamente.` });
+      const files = (e.target as HTMLInputElement).files;
+      if (files) {
+        Array.from(files).forEach(file => {
+          uploadDocument(client.id, docId, file.name);
+          toast({ title: "Archivo cargado", description: `${file.name} se subió correctamente.` });
+        });
       }
     };
     input.click();
+  };
+
+  const handleRemoveFile = (docId: string, fileId: string) => {
+    removeFile(client.id, docId, fileId);
+    toast({ title: "Archivo eliminado", description: "El archivo fue removido del expediente." });
+  };
+
+  const fileIcon = (fileType: string) => {
+    if (["jpg", "jpeg", "png"].includes(fileType)) return <FileImage className="w-3.5 h-3.5 text-muted-foreground" />;
+    if (["xlsx", "xls", "csv"].includes(fileType)) return <FileSpreadsheet className="w-3.5 h-3.5 text-muted-foreground" />;
+    return <File className="w-3.5 h-3.5 text-muted-foreground" />;
   };
 
   const handleExtractAll = () => {
