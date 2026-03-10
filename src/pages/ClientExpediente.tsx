@@ -392,8 +392,12 @@ const ClientExpediente = () => {
                             { label: "Ventas Netas", key: "ventasNetas" },
                             { label: "Costo de Ventas", key: "costoVentas" },
                             { label: "Utilidad Bruta", key: "utilidadBruta", bold: true },
-                            { label: "Gastos de Operacion", key: "gastosOperacion" },
-                            { label: "Utilidad de Operacion", key: "utilidadOperacion", bold: true },
+                            { label: "Gastos de Operación", key: "gastosOperacion" },
+                            { label: "Utilidad de Operación", key: "utilidadOperacion", bold: true },
+                            { label: "Depreciación y Amortización", key: "depreciacionAmortizacion" },
+                            { label: "Gastos Financieros", key: "gastosFinancieros" },
+                            { label: "Utilidad antes de Impuestos", key: "utilidadAntesImpuestos", bold: true },
+                            { label: "Impuestos", key: "impuestos" },
                             { label: "Utilidad Neta", key: "utilidadNeta", bold: true },
                           ].map(row => (
                             <tr key={row.key} className="border-b border-border last:border-0 hover:bg-muted/50">
@@ -411,7 +415,55 @@ const ClientExpediente = () => {
                   </CardContent>
                 </Card>
 
-                {/* Balance General */}
+                {/* EBITDA */}
+                <Card className="border border-accent/20 bg-accent/5">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-accent" />
+                      EBITDA (Utilidad antes de Intereses, Impuestos, Depreciación y Amortización)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-border">
+                            <th className="text-left p-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Concepto</th>
+                            {sampleFinancials.map(f => (
+                              <th key={f.year} className="text-right p-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{f.year}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-b border-border hover:bg-muted/50">
+                            <td className="p-3">Utilidad de Operación</td>
+                            {sampleFinancials.map(f => <td key={f.year} className="p-3 text-right">{formatMoney(f.utilidadOperacion)}</td>)}
+                          </tr>
+                          <tr className="border-b border-border hover:bg-muted/50">
+                            <td className="p-3">+ Depreciación y Amortización</td>
+                            {sampleFinancials.map(f => <td key={f.year} className="p-3 text-right">{formatMoney(f.depreciacionAmortizacion)}</td>)}
+                          </tr>
+                          <tr className="bg-accent/10 font-bold">
+                            <td className="p-3">= EBITDA</td>
+                            {sampleFinancials.map(f => <td key={f.year} className="p-3 text-right">{formatMoney(f.utilidadOperacion + f.depreciacionAmortizacion)}</td>)}
+                          </tr>
+                          <tr className="hover:bg-muted/50">
+                            <td className="p-3 text-muted-foreground">Margen EBITDA</td>
+                            {sampleFinancials.map(f => {
+                              const ebitda = f.utilidadOperacion + f.depreciacionAmortizacion;
+                              return <td key={f.year} className="p-3 text-right font-mono">{((ebitda / f.ventasNetas) * 100).toFixed(1)}%</td>;
+                            })}
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-3 italic">
+                      Fórmula: EBITDA = Utilidad de Operación + Depreciación + Amortización
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Balance General Detallado */}
                 <Card className="border">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base flex items-center gap-2">
@@ -431,13 +483,55 @@ const ClientExpediente = () => {
                           </tr>
                         </thead>
                         <tbody>
+                          {/* Activos */}
+                          <tr className="bg-muted/30"><td colSpan={4} className="p-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">Activo</td></tr>
                           {[
-                            { label: "Activo Circulante", key: "activoCirculante" },
-                            { label: "Activo Fijo", key: "activoFijo" },
+                            { label: "Efectivo y Equivalentes", key: "efectivo" },
+                            { label: "Cuentas por Cobrar", key: "cuentasCobrar" },
+                            { label: "Inventarios", key: "inventarios" },
+                            { label: "Otros Activos Circulantes", key: "otrosActivosCirculantes" },
+                            { label: "Activo Circulante", key: "activoCirculante", bold: true },
+                            { label: "Activo Fijo (Bruto)", key: "activoFijo" },
+                            { label: "(-) Depreciación Acumulada", key: "depreciacionAcumulada" },
+                            { label: "Activo Fijo Neto", key: "activoFijoNeto", bold: true },
                             { label: "Activo Total", key: "activoTotal", bold: true },
-                            { label: "Pasivo Corto Plazo", key: "pasivoCorto" },
-                            { label: "Pasivo Largo Plazo", key: "pasivoLargo" },
+                          ].map(row => (
+                            <tr key={row.key} className="border-b border-border last:border-0 hover:bg-muted/50">
+                              <td className={`p-3 ${row.bold ? "font-semibold" : ""} ${row.key === "depreciacionAcumulada" ? "text-destructive" : ""}`}>{row.label}</td>
+                              {sampleFinancials.map(f => (
+                                <td key={f.year} className={`p-3 text-right ${row.bold ? "font-semibold" : ""} ${row.key === "depreciacionAcumulada" ? "text-destructive" : ""}`}>
+                                  {row.key === "depreciacionAcumulada" ? `(${formatMoney((f as any)[row.key])})` : formatMoney((f as any)[row.key])}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                          {/* Pasivos */}
+                          <tr className="bg-muted/30"><td colSpan={4} className="p-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">Pasivo</td></tr>
+                          {[
+                            { label: "Proveedores", key: "proveedores" },
+                            { label: "Cuentas por Pagar", key: "cuentasPagar" },
+                            { label: "Deuda a Corto Plazo", key: "deudaCortoPlazo" },
+                            { label: "Otros Pasivos CP", key: "otrosPasivosCorto" },
+                            { label: "Pasivo Corto Plazo", key: "pasivoCorto", bold: true },
+                            { label: "Deuda a Largo Plazo", key: "deudaLargoPlazo" },
+                            { label: "Otros Pasivos LP", key: "otrosPasivosLargo" },
+                            { label: "Pasivo Largo Plazo", key: "pasivoLargo", bold: true },
                             { label: "Pasivo Total", key: "pasivoTotal", bold: true },
+                          ].map(row => (
+                            <tr key={row.key} className="border-b border-border last:border-0 hover:bg-muted/50">
+                              <td className={`p-3 ${row.bold ? "font-semibold" : ""}`}>{row.label}</td>
+                              {sampleFinancials.map(f => (
+                                <td key={f.year} className={`p-3 text-right ${row.bold ? "font-semibold" : ""}`}>
+                                  {formatMoney((f as any)[row.key])}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                          {/* Capital */}
+                          <tr className="bg-muted/30"><td colSpan={4} className="p-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">Capital Contable</td></tr>
+                          {[
+                            { label: "Capital Social", key: "capitalSocial" },
+                            { label: "Utilidades Retenidas", key: "utilidadesRetenidas" },
                             { label: "Capital Contable", key: "capitalContable", bold: true },
                           ].map(row => (
                             <tr key={row.key} className="border-b border-border last:border-0 hover:bg-muted/50">
@@ -452,6 +546,66 @@ const ClientExpediente = () => {
                         </tbody>
                       </table>
                     </div>
+                  </CardContent>
+                </Card>
+
+                {/* Ciclo de Conversión de Efectivo */}
+                <Card className="border border-info/20 bg-info/5">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-info" />
+                      Ciclo de Conversión de Efectivo (CCE)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-border">
+                            <th className="text-left p-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Componente</th>
+                            {sampleFinancials.map(f => (
+                              <th key={f.year} className="text-right p-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{f.year}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-b border-border hover:bg-muted/50">
+                            <td className="p-3">Días de Inventario</td>
+                            {sampleFinancials.map(f => {
+                              const dias = (f.inventarios / f.costoVentas) * 365;
+                              return <td key={f.year} className="p-3 text-right font-mono">{dias.toFixed(1)} días</td>;
+                            })}
+                          </tr>
+                          <tr className="border-b border-border hover:bg-muted/50">
+                            <td className="p-3">+ Días de Cuentas por Cobrar</td>
+                            {sampleFinancials.map(f => {
+                              const dias = (f.cuentasCobrar / f.ventasNetas) * 365;
+                              return <td key={f.year} className="p-3 text-right font-mono">{dias.toFixed(1)} días</td>;
+                            })}
+                          </tr>
+                          <tr className="border-b border-border hover:bg-muted/50">
+                            <td className="p-3 text-destructive">- Días de Cuentas por Pagar</td>
+                            {sampleFinancials.map(f => {
+                              const dias = (f.cuentasPagar / f.costoVentas) * 365;
+                              return <td key={f.year} className="p-3 text-right font-mono text-destructive">{dias.toFixed(1)} días</td>;
+                            })}
+                          </tr>
+                          <tr className="bg-info/10 font-bold">
+                            <td className="p-3">= Ciclo de Conversión de Efectivo</td>
+                            {sampleFinancials.map(f => {
+                              const diasInv = (f.inventarios / f.costoVentas) * 365;
+                              const diasCxC = (f.cuentasCobrar / f.ventasNetas) * 365;
+                              const diasCxP = (f.cuentasPagar / f.costoVentas) * 365;
+                              const cce = diasInv + diasCxC - diasCxP;
+                              return <td key={f.year} className={`p-3 text-right font-mono ${cce > 60 ? "text-warning" : "text-success"}`}>{cce.toFixed(1)} días</td>;
+                            })}
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-3 italic">
+                      Fórmula: CCE = Días de Inventario + Días de CxC − Días de CxP. Un CCE menor indica mayor eficiencia en la conversión de recursos a efectivo.
+                    </p>
                   </CardContent>
                 </Card>
               </>
