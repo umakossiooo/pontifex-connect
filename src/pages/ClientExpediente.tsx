@@ -23,17 +23,35 @@ interface ExtractedFinancials {
   utilidadBruta: number;
   gastosOperacion: number;
   utilidadOperacion: number;
+  depreciacionAmortizacion: number;
+  gastosFinancieros: number;
+  utilidadAntesImpuestos: number;
+  impuestos: number;
   utilidadNeta: number;
+  // Balance General - Activo
+  efectivo: number;
+  cuentasCobrar: number;
+  inventarios: number;
+  otrosActivosCirculantes: number;
   activoCirculante: number;
   activoFijo: number;
+  depreciacionAcumulada: number;
+  activoFijoNeto: number;
+  otrosActivosLP: number;
   activoTotal: number;
+  // Balance General - Pasivo
+  proveedores: number;
+  cuentasPagar: number;
+  deudaCortoPlazo: number;
+  otrosPasivosCorto: number;
   pasivoCorto: number;
+  deudaLargoPlazo: number;
+  otrosPasivosLargo: number;
   pasivoLargo: number;
   pasivoTotal: number;
+  capitalSocial: number;
+  utilidadesRetenidas: number;
   capitalContable: number;
-  inventarios: number;
-  cuentasCobrar: number;
-  cuentasPagar: number;
 }
 
 interface ExtractedRatio {
