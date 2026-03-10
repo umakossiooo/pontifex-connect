@@ -188,6 +188,7 @@ export const mockClients: Client[] = [
     guaranteeTypes: ["avalObligado"],
     solvencyStatus: "utilidad",
     productType: "creditoSimple",
+    sustainablePractices: ["Infraestructura cloud con energía renovable", "Oficinas con certificación de edificio verde", "Política de cero papel"],
     documents: createDocumentChecklist().map(d => ({ ...d, uploaded: true, files: [{ id: `f_${d.id}`, fileName: `${d.id}.pdf`, uploadDate: "2025-09-10", fileType: "pdf" }] })),
     financialRatios: [
       { name: "Razón Circulante", value: 2.4, status: "healthy" },
