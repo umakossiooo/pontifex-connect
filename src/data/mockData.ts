@@ -50,6 +50,7 @@ export const mockClients: Client[] = [
     guaranteeTypes: ["avalObligado", "hipotecaria"],
     solvencyStatus: "utilidad",
     productType: "creditoSimple",
+    sustainablePractices: ["Construcción sustentable con materiales reciclados", "Certificación LEED en proyectos residenciales"],
     documents: createDocumentChecklist().map((d, i) => i < 5 ? { ...d, uploaded: true, files: [{ id: `f_${d.id}`, fileName: `doc_${d.id}.pdf`, uploadDate: "2025-11-20", fileType: "pdf" }] } : d),
     financialRatios: [
       { name: "Razón Circulante", value: 1.4, status: "warning" },
