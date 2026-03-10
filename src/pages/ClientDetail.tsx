@@ -343,6 +343,45 @@ const ClientDetail = () => {
                   </div>
                 </div>
 
+                {/* Green Bonds / Sustainable Practices */}
+                <Card className={`border ${client.sustainablePractices && client.sustainablePractices.length > 0 ? "border-success/30 bg-success/5" : "border-dashed"}`}>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Sprout className="w-5 h-5 text-success" />
+                      Elegibilidad para Bonos Verdes / Sustentabilidad
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {client.sustainablePractices && client.sustainablePractices.length > 0 ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Badge className="bg-success/10 text-success text-xs border border-success/30">
+                            <CheckCircle className="w-3 h-3 mr-1" /> Elegible
+                          </Badge>
+                          <span className="text-sm text-muted-foreground">Este cliente cuenta con prácticas sustentables que podrían calificar para financiamiento verde</span>
+                        </div>
+                        <div className="space-y-2">
+                          {client.sustainablePractices.map((practice, i) => (
+                            <div key={i} className="flex items-start gap-2 p-2 rounded bg-success/5 border border-success/10">
+                              <Leaf className="w-4 h-4 text-success mt-0.5 shrink-0" />
+                              <span className="text-sm">{practice}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-xs text-muted-foreground italic">
+                          Los bonos verdes ofrecen tasas preferenciales y acceso a fondeo especializado para proyectos con impacto ambiental positivo (energías renovables, eficiencia energética, construcción sustentable, transporte limpio, etc.).
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="text-center py-4">
+                        <Sprout className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                        <p className="text-sm text-muted-foreground">Sin prácticas sustentables registradas</p>
+                        <p className="text-xs text-muted-foreground mt-1">Si el cliente implementa prácticas ESG, podría acceder a financiamiento verde con mejores condiciones.</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
                 {/* Charts Row */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <Card className="border">
