@@ -211,11 +211,35 @@ const ClientExpediente = () => {
     return <AlertTriangle className="w-4 h-4 text-destructive" />;
   };
 
+  // Capacity calculations with methodology
+  const lastFin = sampleFinancials[sampleFinancials.length - 1];
+  const ebitdaLast = lastFin.utilidadOperacion + lastFin.depreciacionAmortizacion;
+  
   const capacityResults = extractedData ? [
-    { label: "Maximo por Capacidad Contable", value: formatMoney(11300000) },
-    { label: "Maximo por Ventas", value: formatMoney(7700000) },
-    { label: "Maximo por Palanca", value: formatMoney(5650000) },
-    { label: "Maximo por Flujos", value: formatMoney(4800000) },
+    {
+      label: "Máximo por Capacidad Contable",
+      value: formatMoney(lastFin.capitalContable),
+      formula: "Capital Contable del último periodo",
+      detail: `Capital Contable = Capital Social + Utilidades Retenidas = ${formatMoney(lastFin.capitalSocial)} + ${formatMoney(lastFin.utilidadesRetenidas)} = ${formatMoney(lastFin.capitalContable)}`,
+    },
+    {
+      label: "Máximo por Ventas",
+      value: formatMoney(lastFin.ventasNetas * 0.20),
+      formula: "20% de las Ventas Netas anuales",
+      detail: `20% × ${formatMoney(lastFin.ventasNetas)} = ${formatMoney(lastFin.ventasNetas * 0.20)}`,
+    },
+    {
+      label: "Máximo por Palanca (Deuda/EBITDA ≤ 3.5x)",
+      value: formatMoney(ebitdaLast * 3.5 - lastFin.pasivoTotal),
+      formula: "(EBITDA × 3.5) − Pasivo Total",
+      detail: `(${formatMoney(ebitdaLast)} × 3.5) − ${formatMoney(lastFin.pasivoTotal)} = ${formatMoney(ebitdaLast * 3.5 - lastFin.pasivoTotal)}`,
+    },
+    {
+      label: "Máximo por Flujos (DSCR ≥ 1.2x)",
+      value: formatMoney((ebitdaLast - lastFin.impuestos - lastFin.gastosFinancieros) / 1.2),
+      formula: "(EBITDA − Impuestos − Gastos Financieros) / DSCR mínimo (1.2x)",
+      detail: `(${formatMoney(ebitdaLast)} − ${formatMoney(lastFin.impuestos)} − ${formatMoney(lastFin.gastosFinancieros)}) / 1.2 = ${formatMoney((ebitdaLast - lastFin.impuestos - lastFin.gastosFinancieros) / 1.2)}`,
+    },
   ] : [];
 
   return (
