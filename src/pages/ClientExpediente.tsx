@@ -790,21 +790,66 @@ const ClientExpediente = () => {
                       <CardContent className="p-5">
                         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{item.label}</p>
                         <p className="text-2xl font-bold mt-2">{item.value}</p>
+                        <div className="mt-3 p-3 rounded bg-muted/50 border">
+                          <p className="text-xs font-semibold text-muted-foreground mb-1">Fórmula:</p>
+                          <p className="text-xs text-muted-foreground">{item.formula}</p>
+                          <p className="text-xs font-mono text-foreground mt-1">{item.detail}</p>
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
                 </div>
 
-                <Card className="border border-accent/30 bg-accent/5">
-                  <CardContent className="p-5">
-                    <div className="flex items-start gap-3">
-                      <AlertTriangle className="w-5 h-5 text-accent mt-0.5" />
-                      <div>
-                        <p className="text-sm font-semibold">Monto maximo recomendado</p>
-                        <p className="text-2xl font-bold text-accent mt-1">{formatMoney(4800000)}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Basado en el menor de los 4 criterios de capacidad. El cliente solicita {formatMoney(client.amountRequested)}.
-                        </p>
+                {(() => {
+                  const minCapacity = Math.min(...capacityResults.map(c => {
+                    const num = parseFloat(c.value.replace(/[^0-9.-]/g, ''));
+                    return isNaN(num) ? Infinity : num;
+                  }));
+                  const minItem = capacityResults.reduce((min, c) => {
+                    const num = parseFloat(c.value.replace(/[^0-9.-]/g, ''));
+                    const minNum = parseFloat(min.value.replace(/[^0-9.-]/g, ''));
+                    return num < minNum ? c : min;
+                  });
+                  return (
+                    <Card className="border border-accent/30 bg-accent/5">
+                      <CardContent className="p-5">
+                        <div className="flex items-start gap-3">
+                          <AlertTriangle className="w-5 h-5 text-accent mt-0.5" />
+                          <div>
+                            <p className="text-sm font-semibold">Monto máximo recomendado</p>
+                            <p className="text-2xl font-bold text-accent mt-1">{minItem.value}</p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Determinado por el criterio más restrictivo: <span className="font-semibold">{minItem.label}</span>. El cliente solicita {formatMoney(client.amountRequested)}.
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })()}
+
+                <Card className="border">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Metodología de Capacidad de Pago</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-sm text-muted-foreground">
+                    <p>La capacidad de pago se evalúa a través de <span className="font-semibold text-foreground">4 pilares</span>, y el monto máximo se determina por el más restrictivo:</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="p-3 rounded border bg-muted/30">
+                        <p className="font-semibold text-foreground text-xs mb-1">1. Contable</p>
+                        <p className="text-xs">El Capital Contable representa los recursos propios de la empresa. El crédito no debe superar este monto.</p>
+                      </div>
+                      <div className="p-3 rounded border bg-muted/30">
+                        <p className="font-semibold text-foreground text-xs mb-1">2. Ventas</p>
+                        <p className="text-xs">Se toma el 20% de las ventas netas anuales como tope, asegurando que la deuda sea proporcional al volumen de negocio.</p>
+                      </div>
+                      <div className="p-3 rounded border bg-muted/30">
+                        <p className="font-semibold text-foreground text-xs mb-1">3. Palanca (Deuda/EBITDA)</p>
+                        <p className="text-xs">Se calcula cuánta deuda adicional puede tomar sin exceder un ratio Deuda/EBITDA de 3.5x, estándar de la industria.</p>
+                      </div>
+                      <div className="p-3 rounded border bg-muted/30">
+                        <p className="font-semibold text-foreground text-xs mb-1">4. Flujos (DSCR)</p>
+                        <p className="text-xs">Se calcula la capacidad de servicio de deuda manteniendo un DSCR mínimo de 1.2x para asegurar cobertura de pagos.</p>
                       </div>
                     </div>
                   </CardContent>
