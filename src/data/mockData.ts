@@ -50,6 +50,7 @@ export const mockClients: Client[] = [
     guaranteeTypes: ["avalObligado", "hipotecaria"],
     solvencyStatus: "utilidad",
     productType: "creditoSimple",
+    sustainablePractices: ["Construcción sustentable con materiales reciclados", "Certificación LEED en proyectos residenciales"],
     documents: createDocumentChecklist().map((d, i) => i < 5 ? { ...d, uploaded: true, files: [{ id: `f_${d.id}`, fileName: `doc_${d.id}.pdf`, uploadDate: "2025-11-20", fileType: "pdf" }] } : d),
     financialRatios: [
       { name: "Razón Circulante", value: 1.4, status: "warning" },
@@ -118,6 +119,7 @@ export const mockClients: Client[] = [
     guaranteeTypes: ["avalObligado", "prendaria"],
     solvencyStatus: "utilidad",
     productType: "creditoSimple",
+    sustainablePractices: ["Flota vehicular con unidades Euro VI de bajas emisiones", "Programa de compensación de huella de carbono"],
     documents: createDocumentChecklist().map(d => ({ ...d, uploaded: true, files: [{ id: `f_${d.id}`, fileName: `${d.id}.pdf`, uploadDate: "2025-10-25", fileType: "pdf" }] })),
     financialRatios: [
       { name: "Razón Circulante", value: 1.8, status: "healthy" },
@@ -186,6 +188,7 @@ export const mockClients: Client[] = [
     guaranteeTypes: ["avalObligado"],
     solvencyStatus: "utilidad",
     productType: "creditoSimple",
+    sustainablePractices: ["Infraestructura cloud con energía renovable", "Oficinas con certificación de edificio verde", "Política de cero papel"],
     documents: createDocumentChecklist().map(d => ({ ...d, uploaded: true, files: [{ id: `f_${d.id}`, fileName: `${d.id}.pdf`, uploadDate: "2025-09-10", fileType: "pdf" }] })),
     financialRatios: [
       { name: "Razón Circulante", value: 2.4, status: "healthy" },

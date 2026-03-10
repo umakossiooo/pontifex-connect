@@ -79,6 +79,7 @@ export interface Client {
   guaranteeTypes?: string[];
   solvencyStatus?: "utilidad" | "perdida" | "quiebraTecnica";
   productType?: string;
+  sustainablePractices?: string[];
 }
 
 export type PartnerTier = "ORO" | "PLATA" | "BRONCE" | "REVISION";

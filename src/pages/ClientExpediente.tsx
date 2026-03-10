@@ -23,17 +23,35 @@ interface ExtractedFinancials {
   utilidadBruta: number;
   gastosOperacion: number;
   utilidadOperacion: number;
+  depreciacionAmortizacion: number;
+  gastosFinancieros: number;
+  utilidadAntesImpuestos: number;
+  impuestos: number;
   utilidadNeta: number;
+  // Balance General - Activo
+  efectivo: number;
+  cuentasCobrar: number;
+  inventarios: number;
+  otrosActivosCirculantes: number;
   activoCirculante: number;
   activoFijo: number;
+  depreciacionAcumulada: number;
+  activoFijoNeto: number;
+  otrosActivosLP: number;
   activoTotal: number;
+  // Balance General - Pasivo
+  proveedores: number;
+  cuentasPagar: number;
+  deudaCortoPlazo: number;
+  otrosPasivosCorto: number;
   pasivoCorto: number;
+  deudaLargoPlazo: number;
+  otrosPasivosLargo: number;
   pasivoLargo: number;
   pasivoTotal: number;
+  capitalSocial: number;
+  utilidadesRetenidas: number;
   capitalContable: number;
-  inventarios: number;
-  cuentasCobrar: number;
-  cuentasPagar: number;
 }
 
 interface ExtractedRatio {
@@ -54,24 +72,36 @@ interface BankFlow {
 const sampleFinancials: ExtractedFinancials[] = [
   {
     year: "2019", ventasNetas: 35200000, costoVentas: 24640000, utilidadBruta: 10560000,
-    gastosOperacion: 7040000, utilidadOperacion: 3520000, utilidadNeta: 2464000,
-    activoCirculante: 12500000, activoFijo: 8200000, activoTotal: 20700000,
-    pasivoCorto: 6800000, pasivoLargo: 4500000, pasivoTotal: 11300000,
-    capitalContable: 9400000, inventarios: 3200000, cuentasCobrar: 5800000, cuentasPagar: 4200000,
+    gastosOperacion: 7040000, utilidadOperacion: 3520000, depreciacionAmortizacion: 1200000,
+    gastosFinancieros: 480000, utilidadAntesImpuestos: 3040000, impuestos: 576000, utilidadNeta: 2464000,
+    efectivo: 2500000, cuentasCobrar: 5800000, inventarios: 3200000, otrosActivosCirculantes: 1000000,
+    activoCirculante: 12500000, activoFijo: 12200000, depreciacionAcumulada: 4000000, activoFijoNeto: 8200000,
+    otrosActivosLP: 0, activoTotal: 20700000,
+    proveedores: 2800000, cuentasPagar: 4200000, deudaCortoPlazo: 1400000, otrosPasivosCorto: 600000,
+    pasivoCorto: 6800000, deudaLargoPlazo: 3500000, otrosPasivosLargo: 1000000, pasivoLargo: 4500000,
+    pasivoTotal: 11300000, capitalSocial: 5000000, utilidadesRetenidas: 4400000, capitalContable: 9400000,
   },
   {
     year: "2020", ventasNetas: 38500000, costoVentas: 26950000, utilidadBruta: 11550000,
-    gastosOperacion: 7700000, utilidadOperacion: 3850000, utilidadNeta: 2695000,
-    activoCirculante: 14200000, activoFijo: 9100000, activoTotal: 23300000,
-    pasivoCorto: 7500000, pasivoLargo: 5200000, pasivoTotal: 12700000,
-    capitalContable: 10600000, inventarios: 3800000, cuentasCobrar: 6400000, cuentasPagar: 4800000,
+    gastosOperacion: 7700000, utilidadOperacion: 3850000, depreciacionAmortizacion: 1350000,
+    gastosFinancieros: 520000, utilidadAntesImpuestos: 3330000, impuestos: 635000, utilidadNeta: 2695000,
+    efectivo: 2800000, cuentasCobrar: 6400000, inventarios: 3800000, otrosActivosCirculantes: 1200000,
+    activoCirculante: 14200000, activoFijo: 14450000, depreciacionAcumulada: 5350000, activoFijoNeto: 9100000,
+    otrosActivosLP: 0, activoTotal: 23300000,
+    proveedores: 3200000, cuentasPagar: 4800000, deudaCortoPlazo: 1600000, otrosPasivosCorto: 700000,
+    pasivoCorto: 7500000, deudaLargoPlazo: 4100000, otrosPasivosLargo: 1100000, pasivoLargo: 5200000,
+    pasivoTotal: 12700000, capitalSocial: 5000000, utilidadesRetenidas: 5600000, capitalContable: 10600000,
   },
   {
     year: "2021 (Parcial)", ventasNetas: 22000000, costoVentas: 15400000, utilidadBruta: 6600000,
-    gastosOperacion: 4400000, utilidadOperacion: 2200000, utilidadNeta: 1540000,
-    activoCirculante: 15800000, activoFijo: 9500000, activoTotal: 25300000,
-    pasivoCorto: 8200000, pasivoLargo: 5800000, pasivoTotal: 14000000,
-    capitalContable: 11300000, inventarios: 4100000, cuentasCobrar: 7200000, cuentasPagar: 5300000,
+    gastosOperacion: 4400000, utilidadOperacion: 2200000, depreciacionAmortizacion: 800000,
+    gastosFinancieros: 350000, utilidadAntesImpuestos: 1850000, impuestos: 310000, utilidadNeta: 1540000,
+    efectivo: 3200000, cuentasCobrar: 7200000, inventarios: 4100000, otrosActivosCirculantes: 1300000,
+    activoCirculante: 15800000, activoFijo: 15650000, depreciacionAcumulada: 6150000, activoFijoNeto: 9500000,
+    otrosActivosLP: 0, activoTotal: 25300000,
+    proveedores: 3500000, cuentasPagar: 5300000, deudaCortoPlazo: 1800000, otrosPasivosCorto: 900000,
+    pasivoCorto: 8200000, deudaLargoPlazo: 4500000, otrosPasivosLargo: 1300000, pasivoLargo: 5800000,
+    pasivoTotal: 14000000, capitalSocial: 5000000, utilidadesRetenidas: 6300000, capitalContable: 11300000,
   },
 ];
 
@@ -181,11 +211,35 @@ const ClientExpediente = () => {
     return <AlertTriangle className="w-4 h-4 text-destructive" />;
   };
 
+  // Capacity calculations with methodology
+  const lastFin = sampleFinancials[sampleFinancials.length - 1];
+  const ebitdaLast = lastFin.utilidadOperacion + lastFin.depreciacionAmortizacion;
+  
   const capacityResults = extractedData ? [
-    { label: "Maximo por Capacidad Contable", value: formatMoney(11300000) },
-    { label: "Maximo por Ventas", value: formatMoney(7700000) },
-    { label: "Maximo por Palanca", value: formatMoney(5650000) },
-    { label: "Maximo por Flujos", value: formatMoney(4800000) },
+    {
+      label: "Máximo por Capacidad Contable",
+      value: formatMoney(lastFin.capitalContable),
+      formula: "Capital Contable del último periodo",
+      detail: `Capital Contable = Capital Social + Utilidades Retenidas = ${formatMoney(lastFin.capitalSocial)} + ${formatMoney(lastFin.utilidadesRetenidas)} = ${formatMoney(lastFin.capitalContable)}`,
+    },
+    {
+      label: "Máximo por Ventas",
+      value: formatMoney(lastFin.ventasNetas * 0.20),
+      formula: "20% de las Ventas Netas anuales",
+      detail: `20% × ${formatMoney(lastFin.ventasNetas)} = ${formatMoney(lastFin.ventasNetas * 0.20)}`,
+    },
+    {
+      label: "Máximo por Palanca (Deuda/EBITDA ≤ 3.5x)",
+      value: formatMoney(ebitdaLast * 3.5 - lastFin.pasivoTotal),
+      formula: "(EBITDA × 3.5) − Pasivo Total",
+      detail: `(${formatMoney(ebitdaLast)} × 3.5) − ${formatMoney(lastFin.pasivoTotal)} = ${formatMoney(ebitdaLast * 3.5 - lastFin.pasivoTotal)}`,
+    },
+    {
+      label: "Máximo por Flujos (DSCR ≥ 1.2x)",
+      value: formatMoney((ebitdaLast - lastFin.impuestos - lastFin.gastosFinancieros) / 1.2),
+      formula: "(EBITDA − Impuestos − Gastos Financieros) / DSCR mínimo (1.2x)",
+      detail: `(${formatMoney(ebitdaLast)} − ${formatMoney(lastFin.impuestos)} − ${formatMoney(lastFin.gastosFinancieros)}) / 1.2 = ${formatMoney((ebitdaLast - lastFin.impuestos - lastFin.gastosFinancieros) / 1.2)}`,
+    },
   ] : [];
 
   return (
@@ -362,8 +416,12 @@ const ClientExpediente = () => {
                             { label: "Ventas Netas", key: "ventasNetas" },
                             { label: "Costo de Ventas", key: "costoVentas" },
                             { label: "Utilidad Bruta", key: "utilidadBruta", bold: true },
-                            { label: "Gastos de Operacion", key: "gastosOperacion" },
-                            { label: "Utilidad de Operacion", key: "utilidadOperacion", bold: true },
+                            { label: "Gastos de Operación", key: "gastosOperacion" },
+                            { label: "Utilidad de Operación", key: "utilidadOperacion", bold: true },
+                            { label: "Depreciación y Amortización", key: "depreciacionAmortizacion" },
+                            { label: "Gastos Financieros", key: "gastosFinancieros" },
+                            { label: "Utilidad antes de Impuestos", key: "utilidadAntesImpuestos", bold: true },
+                            { label: "Impuestos", key: "impuestos" },
                             { label: "Utilidad Neta", key: "utilidadNeta", bold: true },
                           ].map(row => (
                             <tr key={row.key} className="border-b border-border last:border-0 hover:bg-muted/50">
@@ -381,7 +439,55 @@ const ClientExpediente = () => {
                   </CardContent>
                 </Card>
 
-                {/* Balance General */}
+                {/* EBITDA */}
+                <Card className="border border-accent/20 bg-accent/5">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-accent" />
+                      EBITDA (Utilidad antes de Intereses, Impuestos, Depreciación y Amortización)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-border">
+                            <th className="text-left p-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Concepto</th>
+                            {sampleFinancials.map(f => (
+                              <th key={f.year} className="text-right p-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{f.year}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-b border-border hover:bg-muted/50">
+                            <td className="p-3">Utilidad de Operación</td>
+                            {sampleFinancials.map(f => <td key={f.year} className="p-3 text-right">{formatMoney(f.utilidadOperacion)}</td>)}
+                          </tr>
+                          <tr className="border-b border-border hover:bg-muted/50">
+                            <td className="p-3">+ Depreciación y Amortización</td>
+                            {sampleFinancials.map(f => <td key={f.year} className="p-3 text-right">{formatMoney(f.depreciacionAmortizacion)}</td>)}
+                          </tr>
+                          <tr className="bg-accent/10 font-bold">
+                            <td className="p-3">= EBITDA</td>
+                            {sampleFinancials.map(f => <td key={f.year} className="p-3 text-right">{formatMoney(f.utilidadOperacion + f.depreciacionAmortizacion)}</td>)}
+                          </tr>
+                          <tr className="hover:bg-muted/50">
+                            <td className="p-3 text-muted-foreground">Margen EBITDA</td>
+                            {sampleFinancials.map(f => {
+                              const ebitda = f.utilidadOperacion + f.depreciacionAmortizacion;
+                              return <td key={f.year} className="p-3 text-right font-mono">{((ebitda / f.ventasNetas) * 100).toFixed(1)}%</td>;
+                            })}
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-3 italic">
+                      Fórmula: EBITDA = Utilidad de Operación + Depreciación + Amortización
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Balance General Detallado */}
                 <Card className="border">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base flex items-center gap-2">
@@ -401,13 +507,55 @@ const ClientExpediente = () => {
                           </tr>
                         </thead>
                         <tbody>
+                          {/* Activos */}
+                          <tr className="bg-muted/30"><td colSpan={4} className="p-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">Activo</td></tr>
                           {[
-                            { label: "Activo Circulante", key: "activoCirculante" },
-                            { label: "Activo Fijo", key: "activoFijo" },
+                            { label: "Efectivo y Equivalentes", key: "efectivo" },
+                            { label: "Cuentas por Cobrar", key: "cuentasCobrar" },
+                            { label: "Inventarios", key: "inventarios" },
+                            { label: "Otros Activos Circulantes", key: "otrosActivosCirculantes" },
+                            { label: "Activo Circulante", key: "activoCirculante", bold: true },
+                            { label: "Activo Fijo (Bruto)", key: "activoFijo" },
+                            { label: "(-) Depreciación Acumulada", key: "depreciacionAcumulada" },
+                            { label: "Activo Fijo Neto", key: "activoFijoNeto", bold: true },
                             { label: "Activo Total", key: "activoTotal", bold: true },
-                            { label: "Pasivo Corto Plazo", key: "pasivoCorto" },
-                            { label: "Pasivo Largo Plazo", key: "pasivoLargo" },
+                          ].map(row => (
+                            <tr key={row.key} className="border-b border-border last:border-0 hover:bg-muted/50">
+                              <td className={`p-3 ${row.bold ? "font-semibold" : ""} ${row.key === "depreciacionAcumulada" ? "text-destructive" : ""}`}>{row.label}</td>
+                              {sampleFinancials.map(f => (
+                                <td key={f.year} className={`p-3 text-right ${row.bold ? "font-semibold" : ""} ${row.key === "depreciacionAcumulada" ? "text-destructive" : ""}`}>
+                                  {row.key === "depreciacionAcumulada" ? `(${formatMoney((f as any)[row.key])})` : formatMoney((f as any)[row.key])}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                          {/* Pasivos */}
+                          <tr className="bg-muted/30"><td colSpan={4} className="p-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">Pasivo</td></tr>
+                          {[
+                            { label: "Proveedores", key: "proveedores" },
+                            { label: "Cuentas por Pagar", key: "cuentasPagar" },
+                            { label: "Deuda a Corto Plazo", key: "deudaCortoPlazo" },
+                            { label: "Otros Pasivos CP", key: "otrosPasivosCorto" },
+                            { label: "Pasivo Corto Plazo", key: "pasivoCorto", bold: true },
+                            { label: "Deuda a Largo Plazo", key: "deudaLargoPlazo" },
+                            { label: "Otros Pasivos LP", key: "otrosPasivosLargo" },
+                            { label: "Pasivo Largo Plazo", key: "pasivoLargo", bold: true },
                             { label: "Pasivo Total", key: "pasivoTotal", bold: true },
+                          ].map(row => (
+                            <tr key={row.key} className="border-b border-border last:border-0 hover:bg-muted/50">
+                              <td className={`p-3 ${row.bold ? "font-semibold" : ""}`}>{row.label}</td>
+                              {sampleFinancials.map(f => (
+                                <td key={f.year} className={`p-3 text-right ${row.bold ? "font-semibold" : ""}`}>
+                                  {formatMoney((f as any)[row.key])}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                          {/* Capital */}
+                          <tr className="bg-muted/30"><td colSpan={4} className="p-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">Capital Contable</td></tr>
+                          {[
+                            { label: "Capital Social", key: "capitalSocial" },
+                            { label: "Utilidades Retenidas", key: "utilidadesRetenidas" },
                             { label: "Capital Contable", key: "capitalContable", bold: true },
                           ].map(row => (
                             <tr key={row.key} className="border-b border-border last:border-0 hover:bg-muted/50">
@@ -422,6 +570,66 @@ const ClientExpediente = () => {
                         </tbody>
                       </table>
                     </div>
+                  </CardContent>
+                </Card>
+
+                {/* Ciclo de Conversión de Efectivo */}
+                <Card className="border border-info/20 bg-info/5">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-info" />
+                      Ciclo de Conversión de Efectivo (CCE)
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-border">
+                            <th className="text-left p-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Componente</th>
+                            {sampleFinancials.map(f => (
+                              <th key={f.year} className="text-right p-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{f.year}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-b border-border hover:bg-muted/50">
+                            <td className="p-3">Días de Inventario</td>
+                            {sampleFinancials.map(f => {
+                              const dias = (f.inventarios / f.costoVentas) * 365;
+                              return <td key={f.year} className="p-3 text-right font-mono">{dias.toFixed(1)} días</td>;
+                            })}
+                          </tr>
+                          <tr className="border-b border-border hover:bg-muted/50">
+                            <td className="p-3">+ Días de Cuentas por Cobrar</td>
+                            {sampleFinancials.map(f => {
+                              const dias = (f.cuentasCobrar / f.ventasNetas) * 365;
+                              return <td key={f.year} className="p-3 text-right font-mono">{dias.toFixed(1)} días</td>;
+                            })}
+                          </tr>
+                          <tr className="border-b border-border hover:bg-muted/50">
+                            <td className="p-3 text-destructive">- Días de Cuentas por Pagar</td>
+                            {sampleFinancials.map(f => {
+                              const dias = (f.cuentasPagar / f.costoVentas) * 365;
+                              return <td key={f.year} className="p-3 text-right font-mono text-destructive">{dias.toFixed(1)} días</td>;
+                            })}
+                          </tr>
+                          <tr className="bg-info/10 font-bold">
+                            <td className="p-3">= Ciclo de Conversión de Efectivo</td>
+                            {sampleFinancials.map(f => {
+                              const diasInv = (f.inventarios / f.costoVentas) * 365;
+                              const diasCxC = (f.cuentasCobrar / f.ventasNetas) * 365;
+                              const diasCxP = (f.cuentasPagar / f.costoVentas) * 365;
+                              const cce = diasInv + diasCxC - diasCxP;
+                              return <td key={f.year} className={`p-3 text-right font-mono ${cce > 60 ? "text-warning" : "text-success"}`}>{cce.toFixed(1)} días</td>;
+                            })}
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-3 italic">
+                      Fórmula: CCE = Días de Inventario + Días de CxC − Días de CxP. Un CCE menor indica mayor eficiencia en la conversión de recursos a efectivo.
+                    </p>
                   </CardContent>
                 </Card>
               </>
@@ -582,21 +790,66 @@ const ClientExpediente = () => {
                       <CardContent className="p-5">
                         <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{item.label}</p>
                         <p className="text-2xl font-bold mt-2">{item.value}</p>
+                        <div className="mt-3 p-3 rounded bg-muted/50 border">
+                          <p className="text-xs font-semibold text-muted-foreground mb-1">Fórmula:</p>
+                          <p className="text-xs text-muted-foreground">{item.formula}</p>
+                          <p className="text-xs font-mono text-foreground mt-1">{item.detail}</p>
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
                 </div>
 
-                <Card className="border border-accent/30 bg-accent/5">
-                  <CardContent className="p-5">
-                    <div className="flex items-start gap-3">
-                      <AlertTriangle className="w-5 h-5 text-accent mt-0.5" />
-                      <div>
-                        <p className="text-sm font-semibold">Monto maximo recomendado</p>
-                        <p className="text-2xl font-bold text-accent mt-1">{formatMoney(4800000)}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Basado en el menor de los 4 criterios de capacidad. El cliente solicita {formatMoney(client.amountRequested)}.
-                        </p>
+                {(() => {
+                  const minCapacity = Math.min(...capacityResults.map(c => {
+                    const num = parseFloat(c.value.replace(/[^0-9.-]/g, ''));
+                    return isNaN(num) ? Infinity : num;
+                  }));
+                  const minItem = capacityResults.reduce((min, c) => {
+                    const num = parseFloat(c.value.replace(/[^0-9.-]/g, ''));
+                    const minNum = parseFloat(min.value.replace(/[^0-9.-]/g, ''));
+                    return num < minNum ? c : min;
+                  });
+                  return (
+                    <Card className="border border-accent/30 bg-accent/5">
+                      <CardContent className="p-5">
+                        <div className="flex items-start gap-3">
+                          <AlertTriangle className="w-5 h-5 text-accent mt-0.5" />
+                          <div>
+                            <p className="text-sm font-semibold">Monto máximo recomendado</p>
+                            <p className="text-2xl font-bold text-accent mt-1">{minItem.value}</p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Determinado por el criterio más restrictivo: <span className="font-semibold">{minItem.label}</span>. El cliente solicita {formatMoney(client.amountRequested)}.
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })()}
+
+                <Card className="border">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Metodología de Capacidad de Pago</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-sm text-muted-foreground">
+                    <p>La capacidad de pago se evalúa a través de <span className="font-semibold text-foreground">4 pilares</span>, y el monto máximo se determina por el más restrictivo:</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="p-3 rounded border bg-muted/30">
+                        <p className="font-semibold text-foreground text-xs mb-1">1. Contable</p>
+                        <p className="text-xs">El Capital Contable representa los recursos propios de la empresa. El crédito no debe superar este monto.</p>
+                      </div>
+                      <div className="p-3 rounded border bg-muted/30">
+                        <p className="font-semibold text-foreground text-xs mb-1">2. Ventas</p>
+                        <p className="text-xs">Se toma el 20% de las ventas netas anuales como tope, asegurando que la deuda sea proporcional al volumen de negocio.</p>
+                      </div>
+                      <div className="p-3 rounded border bg-muted/30">
+                        <p className="font-semibold text-foreground text-xs mb-1">3. Palanca (Deuda/EBITDA)</p>
+                        <p className="text-xs">Se calcula cuánta deuda adicional puede tomar sin exceder un ratio Deuda/EBITDA de 3.5x, estándar de la industria.</p>
+                      </div>
+                      <div className="p-3 rounded border bg-muted/30">
+                        <p className="font-semibold text-foreground text-xs mb-1">4. Flujos (DSCR)</p>
+                        <p className="text-xs">Se calcula la capacidad de servicio de deuda manteniendo un DSCR mínimo de 1.2x para asegurar cobertura de pagos.</p>
                       </div>
                     </div>
                   </CardContent>
